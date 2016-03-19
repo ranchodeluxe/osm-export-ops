@@ -1,0 +1,36 @@
+---
+
+- name: install postgresql deps
+  apt:
+    name: libpq-dev,libgdal-dev,libgeos-dev
+
+- name: install postgresql packages
+  apt:
+    name: postgresql-9.3,postgresql-common,postgresql-contrib-9.3
+    state: present
+
+- name: add pg_hba.conf
+  template:
+    src: ../templates/pg_hba.conf.j2
+    dest: /etc/postgresql/9.3/main/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: 0640
+  notify: restart postgresql
+
+- name: Ensure PostgreSQL is listening on all '*'
+  lineinfile: dest=/etc/postgresql/9.3/main/postgresql.conf
+   regexp='^#?listen_addresses\s*='
+   line="listen_addresses = '*'"
+   state=present
+  notify: restart postgresql
+
+- name: install postgis packages
+  apt:
+    name: postgis,postgresql-9.3-postgis-2.1
+    state: present
+
+- name: install psycopg2 bindings
+  pip:
+    name: psycopg2
+    state: present

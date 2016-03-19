@@ -1,0 +1,13 @@
+# path to the 'celery' command:
+CELERY_BIN="/usr/local/bin/celery"
+
+# app instance to use
+CELERY_APP="geopack_server"
+
+# dir to start
+#CELERYBEAT_CHDIR="/home/geopack/geopack-server/"
+
+# celerybeat extra args
+#CELERYBEAT_OPTS="--schedule=/var/run/celery/celerybeat-schedule"
+
+CELERYBEAT_USER="{{ celery_user }}"

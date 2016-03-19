@@ -1,0 +1,35 @@
+from imposm.mapping import (
+    Options,
+    Points, LineStrings, Polygons,
+    String, Bool, Integer, OneOfInt,
+    set_default_name_type, LocalizedName,
+    WayZOrder, ZOrder, Direction,
+    GeneralizedTable, UnionView,
+    FixInvalidPolygons,
+    PseudoArea, meter_to_mapunit, sqr_meter_to_mapunit,
+)
+
+# ansible managed vars are \{\{\}\}
+db_conf = Options(
+    db='{{ db_name }}',
+    host='localhost',
+    port=5432,
+    user='{{ db_user }}',
+    password='{{ db_pass }}',
+    sslmode='allow',
+    prefix='',
+    proj='epsg:900913',
+)
+
+# dynamic celery task render vars
+admin = Polygons(
+    name = 'boundary_$targetadmin',
+    mapping = {
+        'boundary': (
+            'administrative',
+        ),
+    },
+    fields = (
+        ('admin_level', OneOfInt('1 2 3 4 5 6 7 8 9 10 11 12'.split())),
+    ),
+)

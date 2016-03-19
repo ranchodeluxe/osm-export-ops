@@ -1,0 +1,30 @@
+---
+- name: install protobuf-compiler
+  apt:
+    name: protobuf-compiler
+    state: present
+
+- name: install libprotobuf8
+  apt:
+    name: libprotobuf8
+    state: present
+
+- name: install libprotobuf-dev
+  apt:
+    name: libprotobuf-dev
+    state: present
+
+- name: install libtokyocabinet-dev
+  apt:
+    name: libtokyocabinet-dev
+    state: present
+
+- name: install cython
+  pip:
+    name: cython
+    state: present
+
+- name: install imposm
+  pip:
+    name: imposm
+    state: present

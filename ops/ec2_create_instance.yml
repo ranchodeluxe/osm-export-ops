@@ -1,0 +1,59 @@
+---
+# run command:
+# ansible-playbook -i provisioning/inventories/aws_taskrunner_sandbox.ini --ask-vault-pass --private-key=<private-key-path-here> provisioning/ec2_create_instance.yml --limit taskrunner-sandbox-ec2-1a -vv
+
+- hosts: all
+  connection: local
+  tasks:
+    - debug: msg="Matched Groups:{{groups}}"
+
+    - name: create security groups
+      ec2_group:
+        name: "{{ec2_name}}-{{zenvironment}}-security-group"
+        state: "present"
+        description: "{{ec2_name}}-{{zenvironment}}-security-group"
+        region: "{{region}}"
+        rules: "{{base_security_ingress_rules | union(app_security_ingress_rules)}}"
+        rules_egress: "{{base_security_egress_rules | union(app_security_egress_rules)}}"
+      register: ec2_group
+    - debug: var=ec2_group
+
+    - name: create ec2 key-pairs
+      ec2_key:
+        region: "{{region}}"
+        name: "{{keypair_name}}-{{ec2_name}}-{{zenvironment}}-keypair"
+        state: present
+        wait: true
+        key_material: "{{centos_ssh_public_key}}"
+      register: ec2_keypair
+    - debug: var=ec2_keypair
+
+    - name: create ec2 instances...
+      ec2:
+         key_name: "{{ec2_keypair.key.name}}"
+         zone: "{{zone}}"
+         region: "{{region}}"
+         group_id: "{{ec2_group.group_id}}"
+         instance_type: "{{instance_type}}"
+         image: "{{centos_7_ami_id}}"
+         wait: true
+         exact_count: 1
+         count_tag:
+            Name: "{{inventory_hostname}}"
+         instance_tags:
+            Name: "{{inventory_hostname}}"
+            Environment: "{{zenvironment}}"
+      register: ec2_instance
+    - debug: var=ec2_instance
+
+    - name: create and attach elasticIP(s) to instances...
+      ec2_eip:
+        in_vpc: no
+        reuse_existing_ip_allowed: no
+        state: present
+        region: "{{region}}"
+        instance_id: "{{item.id}}"
+      with_items: ec2_instance.instances
+      register: ec2_instance_eip
+    - debug: var=ec2_instance_eip
+

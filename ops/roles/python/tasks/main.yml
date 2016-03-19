@@ -1,0 +1,5 @@
+---
+- name: install Python dependencies used everywhere
+  apt:
+    name: python-software-properties,python-dev,python-pycurl,python-pip,python-setuptools,python-virtualenv
+    state: present

@@ -1,0 +1,87 @@
+---
+- name: install celery
+  pip:
+    name: celery
+    state: present
+
+- name: "useradd floweruser"
+  user:
+    name: "{{ flower_user }}"
+    generate_ssh_key: no
+    shell: /bin/bash
+    createhome: yes
+    home: "/home/{{ flower_user }}"
+    state: present
+
+- name: install flower celery viewer
+  pip:
+    name: flower
+    state: present
+
+- name: install the flower systemd script
+  template:
+    src: ../templates/flower.service.j2
+    dest: /etc/init/flower.conf
+    owner: root
+    group: root
+    mode: 0777
+  notify: restart flower
+
+- name: "useradd celeryuser"
+  user:
+    name: "{{ celery_user }}"
+    generate_ssh_key: no
+    shell: /bin/bash
+    createhome: yes
+    home: "/home/{{ celery_user }}"
+    state: present
+
+- name: install the celeryd configuration
+  template:
+    src: ../templates/celeryd_config.j2
+    dest: /etc/default/celeryd
+    owner: root
+    group: root
+    mode: 0755
+
+- name: install the celeryd init script
+  template:
+    src: ../templates/celeryd_init.j2
+    dest: /etc/init.d/celeryd
+    owner: root
+    group: root
+    mode: 0755
+
+- name: install the celerybeat configuration
+  template:
+    src: ../templates/celerybeat_config.j2
+    dest: /etc/default/celerybeat
+    owner: root
+    group: root
+    mode: 0755
+
+- name: install the celerybeat init script
+  template:
+    src: ../templates/celerybeat_init.j2
+    dest: /etc/init.d/celerybeat
+    owner: root
+    group: root
+    mode: 0755
+
+- name: make sure the log files are owned by celery_user
+  file:
+    dest: "/var/log/celery/"
+    owner: "{{ celery_user }}"
+    group: "{{ celery_user }}"
+    mode: 0777
+    state: directory
+  notify: restart celeryd
+
+- name: make sure the run files are owned by celery_user
+  file:
+    dest: "/var/run/celery/"
+    owner: "{{ celery_user }}"
+    group: "{{ celery_user }}"
+    mode: 0777
+    state: directory
+  notify: restart celeryd

@@ -1,0 +1,31 @@
+---
+
+- name: clone the geopack repository
+  git:
+    accept_hostkey: yes
+    repo: "git@github.com:thebigspoon/geopack-server.git"
+    dest: "/home/{{ app_user }}/geopack-server"
+    clone: yes
+    update: yes
+  become: yes
+  become_user: "{{ app_user }}"
+
+- name: render connection_strings.py
+  template:
+    src: ../templates/connection_strings.j2
+    dest: "/home/{{ app_user }}/geopack-server/geopack_server/connection_strings.py"
+    owner: "{{ app_user }}"
+    group: dev
+    mode: 0744
+
+- name: render admin-mapping.template
+  template:
+    src: ../templates/admin-mapping.template.j2
+    dest: "/home/{{ app_user }}/geopack-server/geopack_server/admin-mapping.template"
+    owner: "{{ app_user }}"
+    group: dev
+    mode: 0744
+
+- name: run python setup.py develop
+  shell: "/usr/bin/python setup.py develop  chdir=/home/{{ app_user }}/geopack-server"
+

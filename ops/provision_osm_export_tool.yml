@@ -1,0 +1,176 @@
+---
+
+- name: create application user(s) and group(s)
+  hosts: all
+  gather_facts: no
+  become: yes # sudo
+  tasks:
+    - name: groupadd 'dev' for g+rw perms on files
+      group:
+        name: "{{ item.group_name }}"
+        state: present
+      with_items: "{{ users_and_groups }}"
+
+    - name: useradd
+      user:
+        name: "{{ item.user_name }}"
+        generate_ssh_key: yes
+        shell: /bin/bash
+        createhome: yes
+        home: "/home/{{ item.user_name }}"
+        group: "{{ item.group_name }}"
+        state: present
+      with_items: "{{ users_and_groups }}"
+
+    - name: add umask to /home/<user>/.profile for g+rw perms on files
+      lineinfile:
+          dest: "/home/{{ app_user.user_name }}/.profile"
+          state: present
+          regexp: '^umask 002$'
+          insertafter: '# for ssh logins, install and configure the libpam-umask package.'
+          line: 'umask 002'
+
+#    - name: create the SSH public key file
+#      copy: content="{{ git_ssh_public_key }}"
+#            dest="/home/{{ app_user.user_name }}/.ssh/id_rsa.pub"
+#            mode=0644
+#      become: yes
+#      become_user: "{{ app_user.user_name }}"
+#
+#    - name: create the SSH private key file
+#      copy: content="{{ git_ssh_private_key }}"
+#            dest="/home/{{ app_user.user_name }}/.ssh/id_rsa"
+#            mode=0600
+#      become: yes
+#      become_user: "{{ app_user.user_name }}"
+
+- name: install base dependencies
+  hosts: all
+  gather_facts: no
+  become: yes # sudo
+  roles:
+    - base_debian_dependencies
+
+- name: install base python dependencies
+  hosts: all
+  gather_facts: no
+  become: yes # sudo
+  roles:
+    - python
+
+- name: install postgresql, postgis and postgresql-common, contrib
+  hosts: all
+  gather_facts: no
+  sudo: yes
+  roles:
+    - postgres
+
+- name: osm_export_tool project setup
+  hosts: all
+  gather_facts: no
+  become: yes # sudo
+  tasks:
+  - name: create project home if it doesn't exist
+    file:
+      dest: "{{ project_home }}"
+      state: directory
+      owner: "{{ app_user.user_name }}"
+      group: "{{ app_user.group_name }}"
+      mode: 0774
+    become: yes
+    become_user: "{{ app_user.user_name }}"
+
+  - name: create empty 'hotosm' virtualenv in project home
+    pip:
+      virtualenv_command: /usr/bin/virtualenv
+      virtualenv: "{{ virtualenv_dir }}"
+      name: ""
+    become: yes
+    become_user: "{{ app_user.user_name }}"
+
+  - name: .bashrc should activate virtual environment when we change to that user
+    lineinfile:
+      dest: "/home/{{ app_user.user_name }}/.bashrc"
+      regexp: "^source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
+      insertafter: "^# User specific aliases and functions"
+      line: "source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
+    become: yes
+    become_user: "{{ app_user.user_name }}"
+
+  - name: create osm_export_tool DB
+    postgresql_db:
+      name: "{{ db_name }}"
+      encoding: 'UTF-8'
+      lc_collate: 'C.UTF-8'
+      lc_ctype: 'C.UTF-8'
+      template: 'template0'
+
+  - name: add POSTGIS extension to the created db
+    postgresql_ext:
+      name: postgis
+      db: "{{ db_name }}"
+
+  - name: add HSTORE extension to the created db
+    postgresql_ext:
+      name: hstore
+      db: "{{ db_name }}"
+
+  - name: create osm_export_tool postgresql superuser/role
+    postgresql_user:
+      db: "{{ db_name }}"
+      name: "{{ db_user }}"
+      password: "{{ db_password }}"
+
+  - name: psql check schema 'exports'
+    command: psql -t -d "{{ db_name }}" -c "SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname = 'exports');"
+    register: check_schema
+    changed_when: "'f' in '{{ check_schema.stdout }}'"
+    become: yes
+    become_user: postgres
+#  - debug: var=check_schema
+
+  - name: psql schema 'exports'
+    command: psql -d "{{ db_name }}" -c "CREATE SCHEMA exports AUTHORIZATION {{ db_user }}; ALTER USER {{ db_user }} SET search_path TO exports, public;"
+    when: check_schema.changed
+    become: yes
+    become_user: postgres
+
+  - name: setup GIS apt repository
+    apt_repository:
+      repo: 'ppa:ubuntugis/ubuntugis-unstable'
+      state: present
+      update_cache: yes
+
+  - name: install GDAL packages
+    apt:
+      name: gdal-bin,libgdal-dev
+      state: present
+
+  - name: write out GDAL environment variables to ./bashrc/
+    lineinfile:
+      dest: "/home/{{ app_user.user_name }}/.bashrc"
+      regexp: "^export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
+      insertafter: "^source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
+      line: "export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
+    become: yes
+    become_user: "{{ app_user.user_name }}"
+
+  - name: install thirdparty dependency packages
+    apt:
+      name: osmctools,spatialite-bin,libspatialite5,libspatialite-dev,default-jre,zip,unzip
+      state: present
+
+#- name: install rabbitmq
+#  hosts: all
+#  gather_facts: no
+#  sudo: yes
+#  roles:
+#    - rabbitmq
+
+#
+#- name: install celery and celerybeat
+#  hosts: all
+#  gather_facts: no
+#  sudo: yes
+#  roles:
+#    - celeryd
