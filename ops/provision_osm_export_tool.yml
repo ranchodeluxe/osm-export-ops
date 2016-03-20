@@ -160,6 +160,7 @@
       name: osmctools,spatialite-bin,libspatialite5,libspatialite-dev,default-jre,zip,unzip
       state: present
 
+  - name: create the thirdparty directory
 #- name: install rabbitmq
 #  hosts: all
 #  gather_facts: no

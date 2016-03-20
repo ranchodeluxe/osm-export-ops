@@ -33,3 +33,20 @@ pg_cfg_pg_hba_default:
 pg_cfg_pg_hba_passwd_hosts: []
 pg_cfg_pg_hba_trust_hosts: []
 pg_cfg_pg_hba_custom: []
+
+#
+# thirdparty installs for OSM and Garmin interaction
+#
+thirdparty_dir: usr/local/src
+osmandmapcreator_zipfile:
+  url: http://download.osmand.net/latest-night-build/OsmAndMapCreator-main.zip
+  exdir_name: osmandmapcreator
+  basename: ""
+mkgmap_zipfile:
+  url: http://www.mkgmap.org.uk/download/mkgmap-r3672.zip
+  exdir_name: mkgmap
+  basename: "{{ mkgmap_zipfile.url | basename | regex_replace('.zip', '') }}"
+splitter_zipfile:
+  url: http://www.mkgmap.org.uk/download/splitter-r435.zip
+  exdir_name: splitter
+  basename: "{{ splitter_zipfile.url | basename | regex_replace('.zip', '') }}"

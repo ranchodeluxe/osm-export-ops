@@ -58,16 +58,18 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 80, host: 8080
   config.vm.network "forwarded_port", guest: 3001, host: 3001
 
-  #
-  # share the whole osm-export-ops directory to vagrant home
-  # no need to share, because already shared to /vagrant/ by default
-  #
-  config.vm.synced_folder "./", "/home/vagrant/ops",
-                          id: "ops",
-                          owner: "vagrant",
-                          group: "vagrant",
-                          mount_options: ["dmode=775","fmode=664"],
-                          create: true
+  # the root directory ( the directory with Vagrantfile ) shared by default to:
+  #     /vagrant/<root>
+  #     /home/vagrant/<root>
+  #     /usr/local/src/<root>
+
+  # example of sharing data directory 
+  # config.vm.synced_folder "./data", "/usr/local/src/data",
+  #                        id: "ops",
+  #                        owner: "vagrant",
+  #                        group: "vagrant",
+  #                        mount_options: ["dmode=775","fmode=664"],
+  #                        create: true
 
   #
   # provision with Ansible
