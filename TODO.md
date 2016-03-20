@@ -6,6 +6,8 @@
 
 0. celery config, which one?
 
+0. should we use nginx,gunicorn for this instead of runserver?
+
 0. think about passwords and where to store them
 
 0. question about flake8 tox.ini?

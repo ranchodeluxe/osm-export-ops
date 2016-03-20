@@ -177,16 +177,48 @@
       mode: 0777
     with_items: "{{ thirdparty_zipfiles }}"
 
+    # drop to shell here because 'get_url' and 'unarchive' are slow
+#  - name: download the thirdparty zips
+#    local_action:
+#    module: "shell wget -q {{ item.url }} -O {{ item.exdir }}"
+#    with_items: "{{ thirdparty_zipfiles }}"
+#    become: yes
+#    become_user: "{{ app_user.user_name }}"
+
   - name: download the thirdparty zips
+    get_url:
+      url: "{{ item.url }}"
+      dest: "{{ item.exdir }}/{{ item.url | basename }}"
+      owner: "{{ app_user.user_name }}"
+      group: "{{ app_user.group_name }}"
+      mode: 0777
+      force: no # make sure it doesn't do a download if dest exists
+    with_items: "{{ thirdparty_zipfiles }}"
+
+  - name: unarchive the thirdparty zips
     unarchive:
       creates: "{{ item.exdir }}/exists.txt" # determines if this should run
-      src: "{{ item.url }}"
+      src: "{{ item.exdir }}/{{ item.url | basename }}"
       dest: "{{ item.exdir }}"
       owner: "{{ app_user.user_name }}"
       group: "{{ app_user.group_name }}"
       mode: 0777
       copy: no
     with_items: "{{ thirdparty_zipfiles }}"
+
+  - name: create export(s) dirs
+    file:
+      dest: "{{ item }}"
+      state: directory
+      owner: "{{ app_user.user_name }}"
+      group: "{{ app_user.group_name }}"
+      mode: 0777
+    with_items:
+      - "{{ exports_staging_dir }}"
+      - "{{ exports_media_dir }}"
+      - "{{ exports_download_dir }}"
+    become: yes
+    become_user: "{{ app_user.user_name }}"
 
 - name: install rabbitmq
   hosts: all
@@ -195,21 +227,30 @@
   roles:
     - rabbitmq
 
-- name: osm_export_tool project setup2
+- name: osm_export_tool checkout and virtualenv & pip install
   hosts: all
   gather_facts: no
   become: yes # sudo
+  environment:
+    CPLUS_INCLUDE_PATH: /usr/include/gdal
+    C_INCLUDE_PATH: /usr/include/gdal
   tasks:
+    - name: apt get dependecies that aren't listed in osm-export-tool2 docs
+      apt:
+        name: libxml2-dev,libxml2,libxslt1-dev,libxslt1.1
+        state: present
+
     - name: clone the osm-export-tools2 repository
       git:
         accept_hostkey: yes
         repo: "https://github.com/hotosm/osm-export-tool2.git"
-        dest: "{{ project_home }}"
+        dest: "{{ project_home }}/{{ repo_name }}"
         clone: yes
         update: yes
       become: yes
       become_user: "{{ app_user.user_name }}"
 
+    - debug: msg="{{ lookup( 'env', 'C_INCLUDE_PATH' ) }}"
     - name: pip install the requirements
       pip:
         virtualenv_command: /usr/bin/virtualenv
@@ -218,23 +259,9 @@
       become: yes
       become_user: "{{ app_user.user_name }}"
 
-    - name: create export(s) dirs
-      file:
-        dest: "{{ item.exdir }}"
-        state: directory
-        owner: "{{ app_user.user_name }}"
-        group: "{{ app_user.group_name }}"
-        mode: 0777
-      with_items:
-        - "{{ exports_staging_dir }}"
-        - "{{ exports_media_dir }}"
-        - "{{ exports_download_dir }}"
-      become: yes
-      become_user: "{{ app_user.user_name }}"
-
     - name: create settings file
       template:
-        src: "{{ templates }}/osmexporttool/dev_dodobas.py.j2"
+        src: "templates/osmexporttool/dev_dodobas.py.j2"
         dest: "{{ settings_dest }}"
         owner: "{{ app_user.user_name }}"
         group: "{{ app_user.group_name }}"
@@ -251,7 +278,7 @@
       become: yes
       become_user: "{{ app_user.user_name }}"
 
-    - name: creat garmin.conf.xml and overrite the current one
+    - name: create garmin.conf.xml and overrite the current one
       template:
         src: "{{ templates }}/osmexporttool/garmin_config.xml.j2"
         dest: "{{ garmin_xml_dest }}"
@@ -261,14 +288,12 @@
       become: yes
       become_user: "{{ app_user.user_name }}"
 
-
 #- name: install OverpassAPI
 #  hosts: all
 #  gather_facts: no
 #  become: yes # sudo
 #  roles:
 #    - rabbitmq
-
 
      # review where config is at
 #  - name: install celery and celerybeat

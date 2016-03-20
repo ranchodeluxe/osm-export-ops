@@ -22,5 +22,6 @@
     state: present
 
 - name: run 'sudo rabbitmq-plugins enable rabbitmq_management' for flower
-  shell: 'sudo rabbitmq-plugins enable rabbitmq_management'
+  shell: 'rabbitmq-plugins enable rabbitmq_management'
   notify: restart rabbitmq-server
+  become: yes # sudo
