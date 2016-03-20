@@ -1,0 +1,36 @@
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
+from .dev import *  # NOQA
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': '{{ db_name }}',
+        'OPTIONS': {
+            'options': '-c search_path=exports,public',
+            'sslmode': 'require',
+        },
+        'CONN_MAX_AGE': None,
+        'USER': '{{ db_user }}',
+        'PASSWORD': '{{ db_password }}'
+        'HOST': 'localhost'
+    }
+}
+
+
+EXPORT_STAGING_ROOT = '{{ exports_staging_dir }}'
+
+# where exports are stored for public download
+EXPORT_DOWNLOAD_ROOT = '{{ exports_download_dir }}'
+
+# the root url for export downloads
+EXPORT_MEDIA_ROOT = '{{ exports_media_dir }}'
+
+# home dir of the OSMAnd Map Creator
+OSMAND_MAP_CREATOR_DIR = '{{ osmandmapcreator_dir }}'
+
+# location of the garmin config file
+GARMIN_CONFIG = '{{ garmin_xml_dest }}'
+
+OVERPASS_API_URL = '{{ overpass_api_url }}'

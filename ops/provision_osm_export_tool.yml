@@ -177,9 +177,9 @@
       mode: 0777
     with_items: "{{ thirdparty_zipfiles }}"
 
-  # TODO: use create flag to speed it up
   - name: download the thirdparty zips
     unarchive:
+      creates: "{{ item.exdir }}/exists.txt" # determines if this should run
       src: "{{ item.url }}"
       dest: "{{ item.exdir }}"
       owner: "{{ app_user.user_name }}"
@@ -208,7 +208,7 @@
         clone: yes
         update: yes
       become: yes
-      become_user: "{{ app_user }}"
+      become_user: "{{ app_user.user_name }}"
 
     - name: pip install the requirements
       pip:
@@ -218,13 +218,49 @@
       become: yes
       become_user: "{{ app_user.user_name }}"
 
-#    - name: create export dirs
-#
-#    - name: create settings file
-#
-#    - name: add DJANGO_SETTINGS_MODULE to .bashrc
-#
-#    - name: creat garmin.conf.xml and overrite the current one
+    - name: create export(s) dirs
+      file:
+        dest: "{{ item.exdir }}"
+        state: directory
+        owner: "{{ app_user.user_name }}"
+        group: "{{ app_user.group_name }}"
+        mode: 0777
+      with_items:
+        - "{{ exports_staging_dir }}"
+        - "{{ exports_media_dir }}"
+        - "{{ exports_download_dir }}"
+      become: yes
+      become_user: "{{ app_user.user_name }}"
+
+    - name: create settings file
+      template:
+        src: "{{ templates }}/osmexporttool/dev_dodobas.py.j2"
+        dest: "{{ settings_dest }}"
+        owner: "{{ app_user.user_name }}"
+        group: "{{ app_user.group_name }}"
+        mode: 0774
+      become: yes
+      become_user: "{{ app_user.user_name }}"
+
+    - name: add DJANGO_SETTINGS_MODULE to .bashrc
+      lineinfile:
+        dest: "/home/{{ app_user.user_name }}/.bashrc"
+        regexp: "^export DJANGO_SETTINGS_MODULE={{ repo_name }}.core.{{ settings_dest | basename }};"
+        insertafter: "^export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
+        line: "^export DJANGO_SETTINGS_MODULE={{ repo_name }}.core.{{ settings_dest | basename }};"
+      become: yes
+      become_user: "{{ app_user.user_name }}"
+
+    - name: creat garmin.conf.xml and overrite the current one
+      template:
+        src: "{{ templates }}/osmexporttool/garmin_config.xml.j2"
+        dest: "{{ garmin_xml_dest }}"
+        owner: "{{ app_user.user_name }}"
+        group: "{{ app_user.group_name }}"
+        mode: 0774
+      become: yes
+      become_user: "{{ app_user.user_name }}"
+
 
 #- name: install OverpassAPI
 #  hosts: all
@@ -234,7 +270,7 @@
 #    - rabbitmq
 
 
-# review
+     # review where config is at
 #  - name: install celery and celerybeat
 #    hosts: all
 #    gather_facts: no
