@@ -84,6 +84,7 @@
     pip:
       virtualenv_command: /usr/bin/virtualenv
       virtualenv: "{{ virtualenv_dir }}"
+      virtualenv_site_packages: yes # include site packages
       name: ""
     become: yes
     become_user: "{{ app_user.user_name }}"
@@ -143,17 +144,17 @@
 
   - name: install GDAL packages
     apt:
-      name: gdal-bin,libgdal-dev
+      name: gdal-bin,libgdal-dev,python-gdal
       state: present
 
-  - name: write out GDAL environment variables to ./bashrc/
-    lineinfile:
-      dest: "/home/{{ app_user.user_name }}/.bashrc"
-      regexp: "^export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
-      insertafter: "^source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
-      line: "export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
-    become: yes
-    become_user: "{{ app_user.user_name }}"
+#  - name: write out GDAL environment variables to ./bashrc/
+#    lineinfile:
+#      dest: "/home/{{ app_user.user_name }}/.bashrc"
+#      regexp: "^export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
+#      insertafter: "^source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
+#      line: "export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
+#    become: yes
+#    become_user: "{{ app_user.user_name }}"
 
   - name: install thirdparty dependency packages
     apt:
@@ -231,9 +232,6 @@
   hosts: all
   gather_facts: no
   become: yes # sudo
-  environment:
-    CPLUS_INCLUDE_PATH: /usr/include/gdal
-    C_INCLUDE_PATH: /usr/include/gdal
   tasks:
     - name: apt get dependecies that aren't listed in osm-export-tool2 docs
       apt:
@@ -243,7 +241,7 @@
     - name: clone the osm-export-tools2 repository
       git:
         accept_hostkey: yes
-        repo: "https://github.com/hotosm/osm-export-tool2.git"
+        repo: "{{ git_repo_url }}"
         dest: "{{ project_home }}/{{ repo_name }}"
         clone: yes
         update: yes
@@ -255,6 +253,7 @@
       pip:
         virtualenv_command: /usr/bin/virtualenv
         virtualenv: "{{ virtualenv_dir }}"
+        virtualenv_site_packages: yes
         requirements: "{{ requirements_file }}"
       become: yes
       become_user: "{{ app_user.user_name }}"
@@ -273,14 +272,14 @@
       lineinfile:
         dest: "/home/{{ app_user.user_name }}/.bashrc"
         regexp: "^export DJANGO_SETTINGS_MODULE={{ repo_name }}.core.{{ settings_dest | basename }};"
-        insertafter: "^export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
-        line: "^export DJANGO_SETTINGS_MODULE={{ repo_name }}.core.{{ settings_dest | basename }};"
+        insertafter: "^source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
+        line: "export DJANGO_SETTINGS_MODULE={{ repo_name }}.core.{{ settings_dest | basename }};"
       become: yes
       become_user: "{{ app_user.user_name }}"
 
     - name: create garmin.conf.xml and overrite the current one
       template:
-        src: "{{ templates }}/osmexporttool/garmin_config.xml.j2"
+        src: "templates/osmexporttool/garmin_config.xml.j2"
         dest: "{{ garmin_xml_dest }}"
         owner: "{{ app_user.user_name }}"
         group: "{{ app_user.group_name }}"

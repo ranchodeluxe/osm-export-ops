@@ -12,6 +12,7 @@ app_user: "{{ users_and_groups[0] }}"
 #
 project_home: "/home/{{ app_user.user_name }}/dev"
 virtualenv_dir: "{{ project_home }}/hotosm"
+git_repo_url: https://github.com/ranchodeluxe/osm-export-tool2.git
 repo_name: "osm-export-tool2"
 requirements_file: "{{ project_home }}/{{ repo_name }}/requirements-dev.txt"
 
