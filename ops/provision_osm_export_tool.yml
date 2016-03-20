@@ -61,7 +61,7 @@
 - name: install postgresql, postgis and postgresql-common, contrib
   hosts: all
   gather_facts: no
-  sudo: yes
+  become: yes # sudo
   roles:
     - postgres
 
@@ -161,17 +161,83 @@
       state: present
 
   - name: create the thirdparty directory
-#- name: install rabbitmq
+    file:
+      dest: "{{ thirdparty_dir }}"
+      state: directory
+      owner: "{{ app_user.user_name }}"
+      group: "{{ app_user.group_name }}"
+      mode: 0777
+
+  - name: create the exdir(s) for zipfiles
+    file:
+      dest: "{{ item.exdir }}"
+      state: directory
+      owner: "{{ app_user.user_name }}"
+      group: "{{ app_user.group_name }}"
+      mode: 0777
+    with_items: "{{ thirdparty_zipfiles }}"
+
+  # TODO: use create flag to speed it up
+  - name: download the thirdparty zips
+    unarchive:
+      src: "{{ item.url }}"
+      dest: "{{ item.exdir }}"
+      owner: "{{ app_user.user_name }}"
+      group: "{{ app_user.group_name }}"
+      mode: 0777
+      copy: no
+    with_items: "{{ thirdparty_zipfiles }}"
+
+- name: install rabbitmq
+  hosts: all
+  gather_facts: no
+  become: yes # sudo
+  roles:
+    - rabbitmq
+
+- name: osm_export_tool project setup2
+  hosts: all
+  gather_facts: no
+  become: yes # sudo
+  tasks:
+    - name: clone the osm-export-tools2 repository
+      git:
+        accept_hostkey: yes
+        repo: "https://github.com/hotosm/osm-export-tool2.git"
+        dest: "{{ project_home }}"
+        clone: yes
+        update: yes
+      become: yes
+      become_user: "{{ app_user }}"
+
+    - name: pip install the requirements
+      pip:
+        virtualenv_command: /usr/bin/virtualenv
+        virtualenv: "{{ virtualenv_dir }}"
+        requirements: "{{ requirements_file }}"
+      become: yes
+      become_user: "{{ app_user.user_name }}"
+
+#    - name: create export dirs
+#
+#    - name: create settings file
+#
+#    - name: add DJANGO_SETTINGS_MODULE to .bashrc
+#
+#    - name: creat garmin.conf.xml and overrite the current one
+
+#- name: install OverpassAPI
 #  hosts: all
 #  gather_facts: no
-#  sudo: yes
+#  become: yes # sudo
 #  roles:
 #    - rabbitmq
 
-#
-#- name: install celery and celerybeat
-#  hosts: all
-#  gather_facts: no
-#  sudo: yes
-#  roles:
-#    - celeryd
+
+# review
+#  - name: install celery and celerybeat
+#    hosts: all
+#    gather_facts: no
+#    sudo: yes
+#    roles:
+#      - celeryd

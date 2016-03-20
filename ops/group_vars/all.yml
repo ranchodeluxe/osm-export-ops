@@ -12,6 +12,8 @@ app_user: "{{ users_and_groups[0] }}"
 #
 project_home: "/home/{{ app_user.user_name }}/dev"
 virtualenv_dir: "{{ project_home }}/hotosm"
+repo_name: "osm-export-tool2"
+requirements_file: "{{ project_home }}/{{ repo_name }}/requirements-dev.txt"
 
 
 #
@@ -38,15 +40,20 @@ pg_cfg_pg_hba_custom: []
 # thirdparty installs for OSM and Garmin interaction
 #
 thirdparty_dir: usr/local/src
-osmandmapcreator_zipfile:
-  url: http://download.osmand.net/latest-night-build/OsmAndMapCreator-main.zip
-  exdir_name: osmandmapcreator
-  basename: ""
-mkgmap_zipfile:
-  url: http://www.mkgmap.org.uk/download/mkgmap-r3672.zip
-  exdir_name: mkgmap
-  basename: "{{ mkgmap_zipfile.url | basename | regex_replace('.zip', '') }}"
-splitter_zipfile:
-  url: http://www.mkgmap.org.uk/download/splitter-r435.zip
-  exdir_name: splitter
-  basename: "{{ splitter_zipfile.url | basename | regex_replace('.zip', '') }}"
+thirdparty_zipfiles:
+  - url: http://download.osmand.net/latest-night-build/OsmAndMapCreator-main.zip
+    exdir: osmandmapcreator
+  - url: http://www.mkgmap.org.uk/download/mkgmap-r3672.zip
+    exdir: mkgmap
+  - url: http://www.mkgmap.org.uk/download/splitter-r435.zip
+    exdir: splitter
+mkgmap_basename: "{{ thirdparty_zipfiles[1].url | basename | regex_replace('.zip', '') }}"
+splitter_basename: "{{ thirdparty_zipfiles[2].url | basename | regex_replace('.zip', '') }}"
+
+#
+# rabbitmq, celery and flower
+#
+rabbitmq_user: "{{ app_user.user_name }}_rabbitmq"
+rabbitmq_pass: "{{ db_password }}"
+flower_user: "{{ app_user.user_name }}_flower"
+celery_user: "{{ app_user.user_name }}_celery"
