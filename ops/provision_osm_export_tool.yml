@@ -92,9 +92,9 @@
   - name: .bashrc should activate virtual environment when we change to that user
     lineinfile:
       dest: "/home/{{ app_user.user_name }}/.bashrc"
-      regexp: "^source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
+      regexp: "^source {{ virtualenv_dir }}/bin/activate; cd {{ project_home }}/{{ repo_name }};"
       insertafter: "^# User specific aliases and functions"
-      line: "source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
+      line: "source {{ virtualenv_dir }}/bin/activate; cd {{ project_home }}/{{ repo_name }};"
     become: yes
     become_user: "{{ app_user.user_name }}"
 
@@ -272,9 +272,9 @@
     - name: add DJANGO_SETTINGS_MODULE to .bashrc
       lineinfile:
         dest: "/home/{{ app_user.user_name }}/.bashrc"
-        regexp: "^export DJANGO_SETTINGS_MODULE={{ repo_name }}.core.{{ settings_dest | basename }};"
-        insertafter: "^source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
-        line: "export DJANGO_SETTINGS_MODULE={{ repo_name }}.core.{{ settings_dest | basename }};"
+        regexp: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};"
+        insertafter: "^source {{ virtualenv_dir }}/bin/activate; cd {{ project_home }}/{{ repo_name }};"
+        line: "export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};"
       become: yes
       become_user: "{{ app_user.user_name }}"
 
