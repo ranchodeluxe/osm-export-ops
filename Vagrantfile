@@ -56,12 +56,13 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 5432, host: 5432 
   config.vm.network "forwarded_port", guest: 5000, host: 5000
   config.vm.network "forwarded_port", guest: 80, host: 8080
+  config.vm.network "forwarded_port", guest: 8000, host: 8000
   config.vm.network "forwarded_port", guest: 3001, host: 3001
 
   # the root directory ( the directory with Vagrantfile ) shared by default to:
-  #     /vagrant/<root>
-  #     /home/vagrant/<root>
-  #     /usr/local/src/<root>
+  # /usr/local/src/<root> => /vagrant/<root>
+  # /usr/local/src/<root>/<playbookdir> => /usr/local/src/<root>/<playbookdir>
+
 
   # example of sharing data directory 
   # config.vm.synced_folder "./data", "/usr/local/src/data",
@@ -81,6 +82,11 @@ Vagrant.configure(2) do |config|
     ansible.limit = "all"
     ansible.playbook = CWD+"/ops/provision_osm_export_tool.yml"
   end
+
+  #
+  # share a folder but don't mount it
+  # until Ansible has run it's provisioning
+  #
 
 end
 
