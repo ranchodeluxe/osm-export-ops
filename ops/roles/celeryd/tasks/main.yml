@@ -2,7 +2,11 @@
 - name: install celery
   pip:
     name: celery
+    virtualenv_command: /usr/bin/virtualenv
+    virtualenv: "{{ virtualenv_dir }}"
     state: present
+  become: yes
+  become_user: "{{ app_user.user_name }}"
 
 - name: "useradd floweruser"
   user:
@@ -17,6 +21,10 @@
   pip:
     name: flower
     state: present
+    virtualenv_command: /usr/bin/virtualenv
+    virtualenv: "{{ virtualenv_dir }}"
+  become: yes
+  become_user: "{{ app_user.user_name }}"
 
 - name: install the flower systemd script
   template:
@@ -27,14 +35,14 @@
     mode: 0777
   notify: restart flower
 
-- name: "useradd celeryuser"
-  user:
-    name: "{{ celery_user }}"
-    generate_ssh_key: no
-    shell: /bin/bash
-    createhome: yes
-    home: "/home/{{ celery_user }}"
-    state: present
+#- name: "useradd celeryuser"
+#  user:
+#    name: "{{ celery_user }}"
+#    generate_ssh_key: no
+#    shell: /bin/bash
+#    createhome: no
+#    group: "{{ celery_group }}"
+#    state: present
 
 - name: install the celeryd configuration
   template:
@@ -72,7 +80,7 @@
   file:
     dest: "/var/log/celery/"
     owner: "{{ celery_user }}"
-    group: "{{ celery_user }}"
+    group: "{{ celery_group }}"
     mode: 0777
     state: directory
   notify: restart celeryd
@@ -81,7 +89,7 @@
   file:
     dest: "/var/run/celery/"
     owner: "{{ celery_user }}"
-    group: "{{ celery_user }}"
+    group: "{{ celery_group }}"
     mode: 0777
     state: directory
   notify: restart celeryd

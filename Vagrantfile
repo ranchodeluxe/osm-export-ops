@@ -53,11 +53,10 @@ Vagrant.configure(2) do |config|
   #
   # port forwarding
   #
-  config.vm.network "forwarded_port", guest: 5432, host: 5432 
-  config.vm.network "forwarded_port", guest: 5000, host: 5000
-  config.vm.network "forwarded_port", guest: 80, host: 8080
-  config.vm.network "forwarded_port", guest: 8000, host: 8000
-  config.vm.network "forwarded_port", guest: 3001, host: 3001
+  config.vm.network "forwarded_port", guest: 5432, host: 5432 # postgis
+  config.vm.network "forwarded_port", guest: 5555, host: 5555 # flower
+  config.vm.network "forwarded_port", guest: 80, host: 8080 # overpassapi
+  config.vm.network "forwarded_port", guest: 8000, host: 8000 # osmexport
 
   # the root directory ( the directory with Vagrantfile ) shared by default to:
   # /usr/local/src/<root> => /vagrant/<root>

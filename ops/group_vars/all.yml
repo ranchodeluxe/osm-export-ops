@@ -6,6 +6,7 @@ users_and_groups:
   - user_name: osmexport
     group_name: dev
 app_user: "{{ users_and_groups[0] }}"
+admin_email: gregcorradini@gmail.com
 
 #
 # osm_export_tool
@@ -58,7 +59,9 @@ splitter_dir: "{{ thirdparty_zipfiles[2].exdir }}/{{ thirdparty_zipfiles[2].url 
 rabbitmq_user: "{{ app_user.user_name }}_rabbitmq"
 rabbitmq_pass: "{{ db_password }}"
 flower_user: "{{ app_user.user_name }}_flower"
-celery_user: "{{ app_user.user_name }}_celery"
+celery_user: "{{ app_user.user_name }}"
+celery_group: "{{ app_user.group_name }}"
+celery_chdir: "{{ project_home }}/{{ repo_name }}"
 
 #
 # export folders and settings.py
@@ -69,7 +72,24 @@ exports_media_dir: "{{ exports_dir }}/media"
 exports_download_dir: "{{ exports_dir }}/download"
 settings_dest: "{{ project_home }}/{{ repo_name }}/core/settings/dev_{{ app_user.user_name }}.py"
 garmin_xml_dest: "{{ project_home }}/{{ repo_name }}/utils/conf/garmin_config.xml"
+
 #
 # overpass api
 #
-overpass_api_url: http://localhost:8000/cgi-bin/interpreter
+overpass_api_dir: "{{ thirdparty_dir }}/overpassapi"
+overpass_api_url: http://0.0.0.0:80/cgi-bin/interpreter
+overpass_latest_tar: http://dev.overpass-api.de/releases/osm-3s_v0.7.52.tar.gz
+# $EXEC_DIR: the root directory in which executable files should be installed (/bin/ suffix removed)
+overpass_exec_dir: "{{ overpass_api_dir }}/exec"
+# $DB_DIR: a directory to store the database
+overpass_db_dir: "{{ overpass_api_dir }}/db"
+# $PLANET_FILE: a place for the compressed (bzip) OSM planet/extract file (up to 10 GB)
+overpass_planet_dir: "{{ overpass_api_dir }}/planetfile"
+# $REPLICATE_DIR: a directory to store minutely (or otherwise) diffs (only necessary if you decide to configure minutely updates below)
+overpass_replicate_dir: "{{ overpass_api_dir }}/replicate"
+planet_osm_download_url: http://download.geofabrik.de/north-america/us/hawaii-latest.osm.pbf
+planet_filename: "planet.osm.pbf"
+
+#
+# celery
+#

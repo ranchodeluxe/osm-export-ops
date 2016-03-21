@@ -1,0 +1,6 @@
+description "Overpass API"
+author "Greg Corradini"
+start on runlevel [2345]
+stop on shutdown
+ExecStartPre=/bin/rm {{ overpass_db_dir }}/osm3s* || true;/bin/rm /dev/shm/osm3s* || true;
+exec {{ overpass_exec_dir }}/bin/dispatcher --osm-base --meta --db-dir={{ overpass_db_dir }}

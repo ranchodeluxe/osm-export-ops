@@ -288,17 +288,121 @@
       become: yes
       become_user: "{{ app_user.user_name }}"
 
-#- name: install OverpassAPI
-#  hosts: all
-#  gather_facts: no
-#  become: yes # sudo
-#  roles:
-#    - rabbitmq
+- name: install OverpassAPI
+  hosts: all
+  gather_facts: no
+  become: yes # sudo
+  tasks:
+    - name: install apt package dependencies
+      apt:
+        name: g++,make,expat,libexpat1-dev,zlib1g-dev
+        state: present
 
-     # review where config is at
-#  - name: install celery and celerybeat
-#    hosts: all
-#    gather_facts: no
-#    sudo: yes
-#    roles:
-#      - celeryd
+    - name: create overpassapi tar dir for extraction
+      file:
+        dest: "{{ overpass_api_dir }}"
+        state: directory
+        owner: "{{ app_user.user_name }}"
+        group: "{{ app_user.group_name }}"
+        mode: 0777
+
+    - name: get the overpassapi tar
+      get_url:
+        url: "{{ overpass_latest_tar }}"
+        dest: "{{ overpass_api_dir }}/{{ overpass_latest_tar | basename }}"
+        owner: "{{ app_user.user_name }}"
+        group: "{{ app_user.group_name }}"
+        mode: 0777
+        force: no # make sure it doesn't do a download if dest exists
+
+    - name: unarchive the tar
+      unarchive:
+        creates: "{{ overpass_api_dir }}/exists.txt" # determines if this should run
+        src: "{{ overpass_api_dir }}/{{ overpass_latest_tar | basename }}"
+        dest: "{{ overpass_api_dir }}/"
+        owner: "{{ app_user.user_name }}"
+        group: "{{ app_user.group_name }}"
+        mode: 0777
+        copy: no
+
+    - name: create all overpassapi dirs
+      file:
+        dest: "{{ item }}"
+        state: directory
+        owner: "{{ app_user.user_name }}"
+        group: "{{ app_user.group_name }}"
+        mode: 0777
+      with_items:
+        - "{{ overpass_exec_dir }}"
+        - "{{ overpass_db_dir }}"
+        - "{{ overpass_planet_dir }}"
+        - "{{ overpass_replicate_dir }}"
+
+    - name: .configure/ overpassapi tool
+      shell: "./configure CXXFLAGS=\"-O3\" --prefix={{ overpass_exec_dir }} chdir={{ overpass_api_dir }}/{{ overpass_latest_tar | basename | regex_replace('.tar.gz','') }}"
+      register: config_output
+#    - debug: msg="{{ config_output.stdout_lines }}"
+
+    - name: make install overpassapi tool
+      shell: "make install chdir={{ overpass_api_dir }}/{{ overpass_latest_tar | basename | regex_replace('.tar.gz','') }}"
+      register: make_output
+#    - debug: msg="{{ make_output.stdout_lines }}"
+
+    - name: download the 'planet.pbf' file that is specified in the config
+      get_url:
+        url: "{{ planet_osm_download_url }}"
+        dest: "{{ overpass_planet_dir }}/{{ planet_filename }}"
+        owner: "{{ app_user.user_name }}"
+        group: "{{ app_user.group_name }}"
+        mode: 0777
+        force: no # make sure it doesn't do a download if dest exists
+      become: yes
+      become_user: "{{ app_user.user_name }}"
+
+    - name: add overpassapi scripts to PATH for .bashrc
+      lineinfile:
+        dest: "/home/{{ app_user.user_name }}/.bashrc"
+        regexp: "^export PATH=$PATH:{{ overpass_exec_dir }}/bin;"
+        insertafter: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};"
+        line: "export PATH=$PATH:{{ overpass_exec_dir }}/bin;"
+
+      # setting the PATH environment var doesn't seem to work for this
+    - name: run `osmconvert` to load the OSM database
+      shell: ". /home/{{ app_user.user_name }}/.bashrc && osmconvert --out-osm {{ overpass_planet_dir }}/{{ planet_filename }} | {{ overpass_exec_dir }}/bin/update_database --meta --db-dir={{ overpass_db_dir }} --flush-size=1"
+      register: osmconvert_output
+    - debug: msg="{{ osmconvert_output.stdout_lines }}"
+
+    - name: install the overpassapi systemd script
+      template:
+        src: templates/osmexporttool/overpassapi.service.j2
+        dest: /etc/init/overpassapi.conf
+        owner: root
+        group: root
+        mode: 0777
+      notify: restart overpassapi
+
+    - name: install apache2 httpd
+      apt:
+        name: apache2
+
+    - name: enable mod.cgi
+      apache2_module: state=present name=cgi
+
+    - name: enable mod.ext_filter
+      apache2_module: state=present name=ext_filter
+
+    - name: add the virtual host to /etc/apache2/sites-available
+      template:
+        src: templates/osmexporttool/overpassapi.apache2.conf.j2
+        dest: /etc/apache2/sites-available/overpassapi.conf
+        owner: root
+        group: root
+        mode: 0744
+      notify: restart apache2
+
+- name: install celery and celerybeat
+  hosts: all
+  gather_facts: no
+  become: yes # sudo
+  roles:
+    - celeryd
