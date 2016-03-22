@@ -23,15 +23,14 @@ on the following versions. So it's probably best to use these versions or greate
     ```
 0. Review the default config variables in `/ops/group_vars/all.yml` that setup this environment. You might want to change some of these
 
-0. Provision it with:
+0. Provision it by running the following commands. Vagrant and VboxGuestAdditions have not been playing nice lately on multiple platforms.
+If you see an error such as `Failed to mount folders in Linux guest` then check out the (workarounds)[https://github.com/mitchellh/vagrant/issues/3341]
 
     ```bash
     $ cd osm-export-ops/
     $ vagrant up
     ```
-0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally. Note: to make this possible there is
-an assumption in the `Vagrantfile` that owner of the `/dev/` folder is the same as your `{{ app_user }}` in the config `ops/group_vars/all.yml`. So if you renamed
-that user then you'll need to change this part of the `Vagrantfile` and run `vagrant reload`:
+0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally:
 
 0. Run the Django development server as described in `osm-export-tool2` docs. In the future this will be setup with Apache:
 
