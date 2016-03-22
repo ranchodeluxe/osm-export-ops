@@ -33,25 +33,25 @@ on the following versions. So it's probably best to use these versions or greate
 an assumption in the `Vagrantfile` that owner of the `/dev/` folder is the same as your `{{ app_user }}` in the config `ops/group_vars/all.yml`. So if you renamed
 that user then you'll need to change this part of the `Vagrantfile` and run `vagrant reload`:
 
+0. Run the Django development server as described in `osm-export-tool2` docs. In the future this will be setup with Apache:
+
+    ```bash
+    $ cd osm-export-ops/ # on host system
+    $ vagrant ssh
+    $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
+    $ python manage.py runserver 0.0.0.0:8000
+    ```
+
 0. Run the celery workers as described in `osm-export-tool2` docs. In the future this will be daemonized:
 
     ```bash
-    $ cd osm-export-ops/
+    $ cd osm-export-ops/ # on host system
     $ vagrant ssh
     $ sudo screen
     $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
     $ celery -A core worker --loglevel debug --logfile=celery.log
     ```
 
-0. Run the Django development server as described in `osm-export-tool2` docs. In the future this will be setup with Apache:
-
-    ```bash
-    $ cd osm-export-ops/
-    $ vagrant ssh
-    $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
-    $ python manage.py runserver 0.0.0.0:8000
-    ```
-    
 
 ## TODO
 

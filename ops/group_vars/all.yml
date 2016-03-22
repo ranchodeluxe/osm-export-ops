@@ -68,6 +68,7 @@ exports_dir: /usr/local/src/exports
 exports_staging_dir: "{{ exports_dir }}/staging/"
 exports_media_dir: "{{ exports_dir }}/media/"
 exports_download_dir: "{{ exports_dir }}/download/"
+django_settings_mod_path: "core.settings.dev_{{ app_user.user_name }}"
 settings_dest: "{{ project_home }}/{{ repo_name }}/core/settings/dev_{{ app_user.user_name }}.py"
 garmin_xml_dest: "{{ project_home }}/{{ repo_name }}/utils/conf/garmin_config.xml"
 

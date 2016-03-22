@@ -62,14 +62,13 @@ Vagrant.configure(2) do |config|
   # /usr/local/src/<root> => /vagrant/<root>
   # /usr/local/src/<root>/<playbookdir> => /usr/local/src/<root>/<playbookdir>
 
-
-  # example of sharing data directory 
+  # example of sharing data directory
   config.vm.synced_folder "dev", "/usr/local/src/dev",
                           id: "dev",
-                          owner: "osmexport",
-                          group: "osmexport",
+                          owner: "vagrant",
+                          group: "vagrant",
                           mount_options: ["dmode=777","fmode=777"],
-                          create: true
+                          create: false
 
   #
   # provision with Ansible

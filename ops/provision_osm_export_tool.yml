@@ -77,8 +77,8 @@
       owner: "{{ app_user.user_name }}"
       group: "{{ app_user.group_name }}"
       mode: 0774
-    become: yes
-    become_user: "{{ app_user.user_name }}"
+#    become: yes
+#    become_user: "{{ app_user.user_name }}"
 
   - name: create empty 'hotosm' virtualenv in project home
     pip:
@@ -263,9 +263,9 @@
     - name: add DJANGO_SETTINGS_MODULE to .bashrc
       lineinfile:
         dest: "/home/{{ app_user.user_name }}/.bashrc"
-        regexp: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};cd {{ project_home }}/{{ repo_name }};"
+        regexp: "^export DJANGO_SETTINGS_MODULE={{ django_settings_mod_path }};cd {{ project_home }}/{{ repo_name }};"
         insertafter: "^# User specific aliases and functions"
-        line: "export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};cd {{ project_home }}/{{ repo_name }};"
+        line: "export DJANGO_SETTINGS_MODULE={{ django_settings_mod_path }};cd {{ project_home }}/{{ repo_name }};"
       become: yes
       become_user: "{{ app_user.user_name }}"
 
@@ -354,7 +354,7 @@
       lineinfile:
         dest: "/home/{{ app_user.user_name }}/.bashrc"
         regexp: "^export PATH=$PATH:{{ overpass_exec_dir }}/bin;"
-        insertafter: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};cd {{ project_home }}/{{ repo_name }};"
+        insertafter: "^export DJANGO_SETTINGS_MODULE={{ django_settings_mod_path }};cd {{ project_home }}/{{ repo_name }};"
         line: "export PATH=$PATH:{{ overpass_exec_dir }}/bin;"
 
       # setting the PATH environment var doesn't seem to work for this
@@ -389,6 +389,14 @@
         owner: root
         group: root
         mode: 0744
+
+    - name: disable 000-default.conf site
+      command: a2dissite 000-default.conf
+      ignore_errors: yes
+      notify: restart apache2
+
+    - name: enable the overpassapi.conf site
+      command: a2ensite overpassapi.conf
       notify: restart apache2
 
     - name: apt-get install 'screen'
@@ -397,7 +405,12 @@
         state: present
 
     - name: run `python manage.py migrate`
-      shell: "/usr/bin/python manage.py migrate chdir={{ project_home }}/{{ repo_name }}"
+      django_manage:
+        app_path: "{{ project_home }}/{{ repo_name }}"
+        command: migrate
+        settings: "{{ django_settings_mod_path }}"
+      become: yes
+      become_user: "{{ app_user.user_name }}"
 
 - name: install celery and celerybeat
   hosts: all
