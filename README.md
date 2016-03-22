@@ -31,6 +31,26 @@ on the following versions. So it's probably best to use these versions or greate
     ```
 0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally
 
+0. Run the celery workers as described in `osm-export-tool2` docs. In the future this will be daemonized:
+
+    ```bash
+    $ cd osm-export-ops/
+    $ vagrant ssh
+    $ sudo screen ctasks
+    $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
+    $ celery -A core worker --loglevel debug --logfile=celery.log
+    ```
+
+0. Run the Django development server as described in `osm-export-tool2` docs. In the future this will be setup with Apache:
+
+    ```bash
+    $ cd osm-export-ops/
+    $ vagrant ssh
+    $ cd /usr/local/src/dev/osm-export-tool2 # or where your {{ project_root }} is set in config vars
+    $ python manage.py runserver 0.0.0.0:8000
+
+
+
 ## TODO
 
 0. make it virtualenv compatible if flag set
