@@ -1,4 +1,3 @@
-## What?
 A repository that helps build a development environment
 for the [osm-export-tool2](https://github.com/hotosm/osm-export-tool2) using Ansible, Vagrant, Virtualbox and Ubuntu 14.04 . Later it will be generalized
 to help with EC2 deployment. Currently the provisioning workflow closely follows the operations described in the
