@@ -22,8 +22,8 @@ on the following versions. So it's probably best to use these versions or greate
     ```
 0. Review the default config variables in `/ops/group_vars/all.yml` that setup this environment. You might want to change some of these
 
-0. Provision it by running the following commands. Vagrant and VboxGuestAdditions have not been playing nice lately on multiple platforms.
-If you see an error such as `Failed to mount folders in Linux guest` then check out the (workarounds)[https://github.com/mitchellh/vagrant/issues/3341]
+0. Provision it by running the following commands. Vagrant and VboxGuestAdditions haven't been playing nicely on multiple platforms.
+If you see an error such as `Failed to mount folders in Linux guest` then check out the [workarounds](https://github.com/mitchellh/vagrant/issues/3341)
 
     ```bash
     $ cd osm-export-ops/
