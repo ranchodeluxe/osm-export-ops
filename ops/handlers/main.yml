@@ -1,6 +1,6 @@
 ---
 - name: restart overpassapi
-  service: name=overpassapi state=restarted
+  service: name=overpassapi state=restarted enabled=yes
 
 - name: restart apache2
-  service: name=apache2 state=restarted
+  service: name=apache2 state=restarted enabled=yes
