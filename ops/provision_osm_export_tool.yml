@@ -381,7 +381,7 @@
       notify: restart overpassapi
 
     - name: start the overpassapi upstart service
-      service: name=overpassapi.conf state=restarted enabled=yes
+      service: name=overpassapi state=restarted enabled=yes
 
     - name: install apache2 httpd
       apt:
