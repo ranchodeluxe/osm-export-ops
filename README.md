@@ -35,6 +35,8 @@ on the following versions. So it's probably best to use these versions or greate
 
 0. make it virtualenv compatible if flag set
 
+0. make the main site run on Apache instead of Django development server
+
 0. make Celery run as daemon so we don't have to ssh in and run screen
 
 0. generalize this to work with EC2 deployment and lock down user roles
