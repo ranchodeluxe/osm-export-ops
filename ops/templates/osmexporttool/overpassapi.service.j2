@@ -1,6 +1,14 @@
-description "Overpass API"
-author "Greg Corradini"
-start on runlevel [2345]
-stop on shutdown
-ExecStartPre=/bin/rm {{ overpass_db_dir }}/osm3s* || true;/bin/rm /dev/shm/osm3s* || true;
-exec {{ overpass_exec_dir }}/bin/dispatcher --osm-base --meta --db-dir={{ overpass_db_dir }}
+description 'Overpass API dispatcher daemon'
+
+env DB_DIR={{ overpass_db_dir }}
+env EXEC_DIR={{ overpass_exec_dir }}
+
+start on (local-filesystems and net-device-up)
+stop on runlevel [!2345]
+
+pre-start script
+        rm $DB_DIR/osm3s* || true
+        rm /dev/shm/osm3s* || true
+end script
+
+exec $EXEC_DIR/bin/dispatcher --osm-base --meta --db-dir=$DB_DIR

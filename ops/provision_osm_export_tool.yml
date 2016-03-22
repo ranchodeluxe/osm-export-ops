@@ -363,14 +363,17 @@
       register: osmconvert_output
     - debug: msg="{{ osmconvert_output.stdout_lines }}"
 
-    - name: install the overpassapi systemd script
+    - name: install the overpassapi upstart script
       template:
         src: templates/osmexporttool/overpassapi.service.j2
         dest: /etc/init/overpassapi.conf
         owner: root
         group: root
-        mode: 0777
+        mode: 0755
       notify: restart overpassapi
+
+    - name: start the overpassapi upstart service
+      service: name=overpassapi.conf state=restarted enabled=yes
 
     - name: install apache2 httpd
       apt:
