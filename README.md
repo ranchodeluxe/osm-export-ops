@@ -29,14 +29,16 @@ on the following versions. So it's probably best to use these versions or greate
     $ cd osm-export-ops/
     $ vagrant up
     ```
-0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally
+0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally. Note: to make this possible there is
+an assumption in the `Vagrantfile` that owner of the `/dev/` folder is the same as your `{{ app_user }}` in the config `ops/group_vars/all.yml`. So if you renamed
+that user then you'll need to change this part of the `Vagrantfile` and run `vagrant reload`:
 
 0. Run the celery workers as described in `osm-export-tool2` docs. In the future this will be daemonized:
 
     ```bash
     $ cd osm-export-ops/
     $ vagrant ssh
-    $ sudo screen ctasks
+    $ sudo screen
     $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
     $ celery -A core worker --loglevel debug --logfile=celery.log
     ```
@@ -46,10 +48,10 @@ on the following versions. So it's probably best to use these versions or greate
     ```bash
     $ cd osm-export-ops/
     $ vagrant ssh
-    $ cd /usr/local/src/dev/osm-export-tool2 # or where your {{ project_root }} is set in config vars
+    $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
     $ python manage.py runserver 0.0.0.0:8000
     ```
-
+0. Note: the Vagrant file
 
 ## TODO
 
