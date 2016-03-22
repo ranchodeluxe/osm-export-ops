@@ -82,21 +82,21 @@
 
   - name: create empty 'hotosm' virtualenv in project home
     pip:
-      virtualenv_command: /usr/bin/virtualenv
-      virtualenv: "{{ virtualenv_dir }}"
+#      virtualenv_command: /usr/bin/virtualenv
+#      virtualenv: "{{ virtualenv_dir }}"
       virtualenv_site_packages: yes # include site packages
       name: ""
-    become: yes
-    become_user: "{{ app_user.user_name }}"
+#    become: yes
+#    become_user: "{{ app_user.user_name }}"
 
-  - name: .bashrc should activate virtual environment when we change to that user
-    lineinfile:
-      dest: "/home/{{ app_user.user_name }}/.bashrc"
-      regexp: "^source {{ virtualenv_dir }}/bin/activate; cd {{ project_home }}/{{ repo_name }};"
-      insertafter: "^# User specific aliases and functions"
-      line: "source {{ virtualenv_dir }}/bin/activate; cd {{ project_home }}/{{ repo_name }};"
-    become: yes
-    become_user: "{{ app_user.user_name }}"
+#  - name: .bashrc should activate virtual environment when we change to that user
+#    lineinfile:
+#      dest: "/home/{{ app_user.user_name }}/.bashrc"
+#      regexp: "^source {{ virtualenv_dir }}/bin/activate; cd {{ project_home }}/{{ repo_name }};"
+#      insertafter: "^# User specific aliases and functions"
+#      line: "source {{ virtualenv_dir }}/bin/activate; cd {{ project_home }}/{{ repo_name }};"
+#    become: yes
+#    become_user: "{{ app_user.user_name }}"
 
   - name: create osm_export_tool DB
     postgresql_db:
@@ -146,15 +146,6 @@
     apt:
       name: gdal-bin,libgdal-dev,python-gdal
       state: present
-
-#  - name: write out GDAL environment variables to ./bashrc/
-#    lineinfile:
-#      dest: "/home/{{ app_user.user_name }}/.bashrc"
-#      regexp: "^export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
-#      insertafter: "^source {{ virtualenv_dir }}/bin/activate; cd /home/{{ app_user.user_name }};"
-#      line: "export CPLUS_INCLUDE_PATH=/usr/include/gdal;export C_INCLUDE_PATH=/usr/include/gdal;"
-#    become: yes
-#    become_user: "{{ app_user.user_name }}"
 
   - name: install thirdparty dependency packages
     apt:
@@ -252,12 +243,12 @@
     - debug: msg="{{ lookup( 'env', 'C_INCLUDE_PATH' ) }}"
     - name: pip install the requirements
       pip:
-        virtualenv_command: /usr/bin/virtualenv
-        virtualenv: "{{ virtualenv_dir }}"
-        virtualenv_site_packages: yes
+#        virtualenv_command: /usr/bin/virtualenv
+#        virtualenv: "{{ virtualenv_dir }}"
+#        virtualenv_site_packages: yes
         requirements: "{{ requirements_file }}"
-      become: yes
-      become_user: "{{ app_user.user_name }}"
+#      become: yes
+#      become_user: "{{ app_user.user_name }}"
 
     - name: create settings file
       template:
@@ -273,7 +264,7 @@
       lineinfile:
         dest: "/home/{{ app_user.user_name }}/.bashrc"
         regexp: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};"
-        insertafter: "^source {{ virtualenv_dir }}/bin/activate; cd {{ project_home }}/{{ repo_name }};"
+        insertafter: "^# User specific aliases and functions"
         line: "export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};"
       become: yes
       become_user: "{{ app_user.user_name }}"
@@ -399,6 +390,14 @@
         group: root
         mode: 0744
       notify: restart apache2
+
+    - name: apt-get install 'screen'
+      apt:
+        name: 'screen'
+        state: present
+
+    - name: run `python manage.py migrate`
+      shell: "/usr/bin/python manage.py migrate chdir={{ project_root }}/{{ repo_name }}"
 
 - name: install celery and celerybeat
   hosts: all

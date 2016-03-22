@@ -11,12 +11,12 @@ admin_email: gregcorradini@gmail.com
 #
 # osm_export_tool
 #
-project_home: "/home/{{ app_user.user_name }}/dev"
-virtualenv_dir: "{{ project_home }}/hotosm"
+#project_home: "/home/{{ app_user.user_name }}/dev"
+project_home: "/usr/local/src/dev"
+#virtualenv_dir: "{{ project_home }}/hotosm"
 git_repo_url: https://github.com/ranchodeluxe/osm-export-tool2.git
 repo_name: "osm-export-tool2"
 requirements_file: "{{ project_home }}/{{ repo_name }}/requirements-dev.txt"
-
 
 #
 # postgres
@@ -26,14 +26,12 @@ db_user: "{{ app_user.user_name }}_pg"
 db_password: password
 pg_admin_user: 'postgres'
 pg_default_auth_method: 'trust'
-
 pg_cfg_pg_hba_default:
   - { type: local, database: all, user: '{{ pg_admin_user }}', address: '', method: '{{ pg_default_auth_method }}', comment: '' }
   - { type: local, database: all, user: all, address: '',             method: '{{ pg_default_auth_method }}', comment: '"local" is for Unix domain socket connections only' }
   - { type: host,  database: all, user: all, address: '127.0.0.1/32', method: '{{ pg_default_auth_method }}', comment: 'IPv4 local connections:' }
   - { type: host,  database: all, user: all, address: '10.0.2.2/32', method: '{{ pg_default_auth_method }}', comment: 'IPv4 local connections:' }
   - { type: host,  database: all, user: all, address: '::1/128',      method: '{{ pg_default_auth_method }}', comment: 'IPv6 local connections:' }
-
 pg_cfg_pg_hba_passwd_hosts: []
 pg_cfg_pg_hba_trust_hosts: []
 pg_cfg_pg_hba_custom: []
@@ -67,9 +65,9 @@ celery_chdir: "{{ project_home }}/{{ repo_name }}"
 # export folders and settings.py
 #
 exports_dir: /usr/local/src/exports
-exports_staging_dir: "{{ exports_dir }}/staging"
-exports_media_dir: "{{ exports_dir }}/media"
-exports_download_dir: "{{ exports_dir }}/download"
+exports_staging_dir: "{{ exports_dir }}/staging/"
+exports_media_dir: "{{ exports_dir }}/media/"
+exports_download_dir: "{{ exports_dir }}/download/"
 settings_dest: "{{ project_home }}/{{ repo_name }}/core/settings/dev_{{ app_user.user_name }}.py"
 garmin_xml_dest: "{{ project_home }}/{{ repo_name }}/utils/conf/garmin_config.xml"
 
@@ -80,16 +78,12 @@ overpass_api_dir: "{{ thirdparty_dir }}/overpassapi"
 overpass_api_url: http://0.0.0.0:80/cgi-bin/interpreter
 overpass_latest_tar: http://dev.overpass-api.de/releases/osm-3s_v0.7.52.tar.gz
 # $EXEC_DIR: the root directory in which executable files should be installed (/bin/ suffix removed)
-overpass_exec_dir: "{{ overpass_api_dir }}/exec"
+overpass_exec_dir: "{{ overpass_api_dir }}/exec" # move
 # $DB_DIR: a directory to store the database
-overpass_db_dir: "{{ overpass_api_dir }}/db"
+overpass_db_dir: "{{ overpass_api_dir }}/db" # move
 # $PLANET_FILE: a place for the compressed (bzip) OSM planet/extract file (up to 10 GB)
-overpass_planet_dir: "{{ overpass_api_dir }}/planetfile"
+overpass_planet_dir: "{{ overpass_api_dir }}/planetfile" # move
 # $REPLICATE_DIR: a directory to store minutely (or otherwise) diffs (only necessary if you decide to configure minutely updates below)
-overpass_replicate_dir: "{{ overpass_api_dir }}/replicate"
-planet_osm_download_url: http://download.geofabrik.de/north-america/us/hawaii-latest.osm.pbf
-planet_filename: "planet.osm.pbf"
-
-#
-# celery
-#
+overpass_replicate_dir: "{{ overpass_api_dir }}/replicate" # move
+planet_osm_download_url: http://download.geofabrik.de/south-america/suriname-latest.osm.pbf
+planet_filename: "{{ planet_osm_download_url | basename }}" # move

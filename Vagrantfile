@@ -64,12 +64,12 @@ Vagrant.configure(2) do |config|
 
 
   # example of sharing data directory 
-  # config.vm.synced_folder "./data", "/usr/local/src/data",
-  #                        id: "ops",
-  #                        owner: "vagrant",
-  #                        group: "vagrant",
-  #                        mount_options: ["dmode=775","fmode=664"],
-  #                        create: true
+  config.vm.synced_folder "dev", "/usr/local/src/dev",
+                          id: "ops",
+                          owner: "vagrant",
+                          group: "vagrant",
+                          mount_options: ["dmode=777","fmode=777"],
+                          create: true
 
   #
   # provision with Ansible
@@ -81,11 +81,6 @@ Vagrant.configure(2) do |config|
     ansible.limit = "all"
     ansible.playbook = CWD+"/ops/provision_osm_export_tool.yml"
   end
-
-  #
-  # share a folder but don't mount it
-  # until Ansible has run it's provisioning
-  #
 
 end
 

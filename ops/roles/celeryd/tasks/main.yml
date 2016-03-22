@@ -2,11 +2,11 @@
 - name: install celery
   pip:
     name: celery
-    virtualenv_command: /usr/bin/virtualenv
-    virtualenv: "{{ virtualenv_dir }}"
+#    virtualenv_command: /usr/bin/virtualenv
+#    virtualenv: "{{ virtualenv_dir }}"
     state: present
-  become: yes
-  become_user: "{{ app_user.user_name }}"
+#  become: yes
+#  become_user: "{{ app_user.user_name }}"
 
 - name: "useradd floweruser"
   user:
@@ -21,10 +21,10 @@
   pip:
     name: flower
     state: present
-    virtualenv_command: /usr/bin/virtualenv
-    virtualenv: "{{ virtualenv_dir }}"
-  become: yes
-  become_user: "{{ app_user.user_name }}"
+#    virtualenv_command: /usr/bin/virtualenv
+#    virtualenv: "{{ virtualenv_dir }}"
+#  become: yes
+#  become_user: "{{ app_user.user_name }}"
 
 - name: install the flower systemd script
   template:
@@ -44,52 +44,52 @@
 #    group: "{{ celery_group }}"
 #    state: present
 
-- name: install the celeryd configuration
-  template:
-    src: ../templates/celeryd_config.j2
-    dest: /etc/default/celeryd
-    owner: root
-    group: root
-    mode: 0755
+#- name: install the celeryd configuration
+#  template:
+#    src: ../templates/celeryd_config.j2
+#    dest: /etc/default/celeryd
+#    owner: root
+#    group: root
+#    mode: 0755
 
-- name: install the celeryd init script
-  template:
-    src: ../templates/celeryd_init.j2
-    dest: /etc/init.d/celeryd
-    owner: root
-    group: root
-    mode: 0755
+#- name: install the celeryd init script
+#  template:
+#    src: ../templates/celeryd_init.j2
+#    dest: /etc/init.d/celeryd
+#    owner: root
+#    group: root
+#    mode: 0755
 
-- name: install the celerybeat configuration
-  template:
-    src: ../templates/celerybeat_config.j2
-    dest: /etc/default/celerybeat
-    owner: root
-    group: root
-    mode: 0755
+#- name: install the celerybeat configuration
+#  template:
+#    src: ../templates/celerybeat_config.j2
+#    dest: /etc/default/celerybeat
+#    owner: root
+#    group: root
+#    mode: 0755
 
-- name: install the celerybeat init script
-  template:
-    src: ../templates/celerybeat_init.j2
-    dest: /etc/init.d/celerybeat
-    owner: root
-    group: root
-    mode: 0755
+#- name: install the celerybeat init script
+#  template:
+#    src: ../templates/celerybeat_init.j2
+#    dest: /etc/init.d/celerybeat
+#    owner: root
+#    group: root
+#    mode: 0755
 
-- name: make sure the log files are owned by celery_user
-  file:
-    dest: "/var/log/celery/"
-    owner: "{{ celery_user }}"
-    group: "{{ celery_group }}"
-    mode: 0777
-    state: directory
-  notify: restart celeryd
+#- name: make sure the log files are owned by celery_user
+#  file:
+#    dest: "/var/log/celery/"
+#    owner: "{{ celery_user }}"
+#    group: "{{ celery_group }}"
+#    mode: 0777
+#    state: directory
+#  notify: restart celeryd
 
-- name: make sure the run files are owned by celery_user
-  file:
-    dest: "/var/run/celery/"
-    owner: "{{ celery_user }}"
-    group: "{{ celery_group }}"
-    mode: 0777
-    state: directory
-  notify: restart celeryd
+#- name: make sure the run files are owned by celery_user
+#  file:
+#    dest: "/var/run/celery/"
+#    owner: "{{ celery_user }}"
+#    group: "{{ celery_group }}"
+#    mode: 0777
+#    state: directory
+#  notify: restart celeryd
