@@ -51,7 +51,7 @@ that user then you'll need to change this part of the `Vagrantfile` and run `vag
     $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
     $ python manage.py runserver 0.0.0.0:8000
     ```
-0. Note: the Vagrant file
+    
 
 ## TODO
 
