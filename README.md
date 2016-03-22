@@ -1,8 +1,8 @@
 ## What?
 A repository that helps build a development environment
 for the [osm-export-tool2](https://github.com/hotosm/osm-export-tool2) using Ansible, Vagrant, Virtualbox and Ubuntu 14.04 . Later it will be generalized
-to help with EC2 deployment. Currently the provisiong workflow closely follows most of operations described in the
-[osm-export-tool2 setup README](https://github.com/hotosm/osm-export-tool2/blob/master/README.md), which it probably won't in the future
+to help with EC2 deployment. Currently the provisioning workflow closely follows the operations described in the
+[osm-export-tool2 README](https://github.com/hotosm/osm-export-tool2/blob/master/README.md), which it will diverge from in the future
 
 ## Getting Started
 
