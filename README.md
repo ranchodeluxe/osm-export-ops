@@ -21,7 +21,7 @@ on the following versions. So it's probably best to use these versions or greate
     $ vagrant plugin install vagrant-vbguest
     $ vagrant plugin install vagrant-ansible-local
     ```
-0. Take a peek at the default config variables in `/ops/group_vars/all.yml` that setup this environment. You might want to change some of these
+0. Review the default config variables in `/ops/group_vars/all.yml` that setup this environment. You might want to change some of these
 
 0. Provision it with:
 
@@ -48,7 +48,7 @@ on the following versions. So it's probably best to use these versions or greate
     $ vagrant ssh
     $ cd /usr/local/src/dev/osm-export-tool2 # or where your {{ project_root }} is set in config vars
     $ python manage.py runserver 0.0.0.0:8000
-
+    ```
 
 
 ## TODO
