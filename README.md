@@ -29,7 +29,7 @@ If you see an error such as `Failed to mount folders in Linux guest` then check 
     $ cd osm-export-ops/
     $ vagrant up
     ```
-0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally:
+0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally
 
 0. Run the Django development server as described in `osm-export-tool2` docs. In the future this will be setup with Apache:
 
