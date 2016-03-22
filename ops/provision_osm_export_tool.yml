@@ -329,6 +329,14 @@
         - "{{ overpass_planet_dir }}"
         - "{{ overpass_replicate_dir }}"
 
+    - name: add an .html file to overpass exec dir to help us see if it's working
+      template:
+        src: templates/osmexporttool/index.html.j2
+        dest: "{{ overpass_exec_dir }}/index.html"
+        owner: "root"
+        group: "root"
+        mode: 0777
+
     - name: .configure/ overpassapi tool
       shell: "./configure CXXFLAGS=\"-O3\" --prefix={{ overpass_exec_dir }} chdir={{ overpass_api_dir }}/{{ overpass_latest_tar | basename | regex_replace('.tar.gz','') }}"
       register: config_output
