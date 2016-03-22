@@ -12,7 +12,7 @@ on the following versions. So it's probably best to use these versions or greate
     - Vagrant 1.8.1
     - VirtualBox 4.3.10
     - VBoxGuestAdditions 4.3.10
-    - Ubuntu 14.04 LTS ( trusty ) # just so we're clear what i was using, not that you have to
+    - Ubuntu 14.04 LTS ( trusty ) # just so we're clear what my host OS was
     ```
 0. After Vagrant is installed on your host make sure to install a couple plugins:
 
