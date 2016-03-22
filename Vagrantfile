@@ -65,9 +65,9 @@ Vagrant.configure(2) do |config|
 
   # example of sharing data directory 
   config.vm.synced_folder "dev", "/usr/local/src/dev",
-                          id: "ops",
-                          owner: "vagrant",
-                          group: "vagrant",
+                          id: "dev",
+                          owner: "osmexport",
+                          group: "osmexport",
                           mount_options: ["dmode=777","fmode=777"],
                           create: true
 
