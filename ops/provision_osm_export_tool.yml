@@ -263,9 +263,9 @@
     - name: add DJANGO_SETTINGS_MODULE to .bashrc
       lineinfile:
         dest: "/home/{{ app_user.user_name }}/.bashrc"
-        regexp: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};"
+        regexp: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};cd {{ project_home }}/{{ repo_name }};"
         insertafter: "^# User specific aliases and functions"
-        line: "export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};"
+        line: "export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};cd {{ project_home }}/{{ repo_name }};"
       become: yes
       become_user: "{{ app_user.user_name }}"
 
@@ -354,7 +354,7 @@
       lineinfile:
         dest: "/home/{{ app_user.user_name }}/.bashrc"
         regexp: "^export PATH=$PATH:{{ overpass_exec_dir }}/bin;"
-        insertafter: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};"
+        insertafter: "^export DJANGO_SETTINGS_MODULE=core.settings.{{ settings_dest | basename | regex_replace('.py', '') }};cd {{ project_home }}/{{ repo_name }};"
         line: "export PATH=$PATH:{{ overpass_exec_dir }}/bin;"
 
       # setting the PATH environment var doesn't seem to work for this
@@ -397,7 +397,7 @@
         state: present
 
     - name: run `python manage.py migrate`
-      shell: "/usr/bin/python manage.py migrate chdir={{ project_root }}/{{ repo_name }}"
+      shell: "/usr/bin/python manage.py migrate chdir={{ project_home }}/{{ repo_name }}"
 
 - name: install celery and celerybeat
   hosts: all
