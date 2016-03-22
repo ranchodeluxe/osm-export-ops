@@ -1,7 +1,8 @@
 ## What?
 A repository that helps setup a Virtualbox Ubuntu 14.04 development environment
 for the [osm-export-tool2](https://github.com/hotosm/osm-export-tool2) using Ansible and Vagrant. Later it will be generalized
-to help with EC2 deployment -- see [TODOs](#todo)
+to help with EC2 deployment. Currently the provisiong workflow follows the order of operations described in the setup
+[README](https://github.com/hotosm/osm-export-tool2/blob/master/README.md) which it probably shouldn't in the future
 
 ## Getting Started
 
@@ -28,3 +29,6 @@ on the following versions. So it's probably best to use these versions or greate
 0. make Celery run as daemon so we don't have to ssh in and run screen
 
 0. generalize this to work with EC2 deployment and lock down user roles
+
+0. reorganization the provisioning workflow to make more sense instead of following setup directions in
+[README](https://github.com/hotosm/osm-export-tool2/blob/master/README.md)
