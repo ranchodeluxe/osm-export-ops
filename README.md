@@ -1,7 +1,7 @@
 ## What?
 A repository that helps build a development environment
 for the [osm-export-tool2](https://github.com/hotosm/osm-export-tool2) using Ansible, Vagrant, Virtualbox and Ubuntu 14.04 . Later it will be generalized
-to help with EC2 deployment. Currently the provisiong workflow follows the order of operations described in the
+to help with EC2 deployment. Currently the provisiong workflow closely follows most of operations described in the
 [osm-export-tool2 setup README](https://github.com/hotosm/osm-export-tool2/blob/master/README.md), which it probably won't in the future
 
 ## Getting Started
@@ -21,6 +21,15 @@ on the following versions. So it's probably best to use these versions or greate
     $ vagrant plugin install vagrant-vbguest
     $ vagrant plugin install vagrant-ansible-local
     ```
+0. Take a peek at the default config variables in `/ops/group_vars/all.yml` that setup this environment. You might want to change some of these
+
+0. Provision it with:
+
+    ```bash
+    $ cd osm-export-ops/
+    $ vagrant up
+    ```
+0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally
 
 ## TODO
 
