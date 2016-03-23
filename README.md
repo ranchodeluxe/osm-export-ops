@@ -49,17 +49,3 @@ If you see an error such as `Failed to mount folders in Linux guest` then check 
     $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
     $ celery -A core worker --loglevel debug --logfile=celery.log
     ```
-
-
-## TODO
-
-0. make it virtualenv compatible if flag set
-
-0. make the main site run on Apache instead of Django development server
-
-0. make Celery run as daemon so we don't have to ssh in and run screen
-
-0. generalize this to work with EC2 deployment and lock down user roles
-
-0. reorganization the provisioning workflow to make more sense instead of following setup directions in
-[README](https://github.com/hotosm/osm-export-tool2/blob/master/README.md)
