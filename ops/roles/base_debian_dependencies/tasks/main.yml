@@ -1,5 +1,0 @@
----
-- name: install build-essential and build tools
-  apt:
-    name: build-essential,libtool,automake,binutils,git
-    state: present

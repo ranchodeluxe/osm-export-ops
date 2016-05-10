@@ -44,19 +44,25 @@
 #      become: yes
 #      become_user: "{{ app_user.user_name }}"
 
-- name: install base dependencies
+- name: install build-essential and build tools
   hosts: all
   gather_facts: no
   become: yes # sudo
-  roles:
-    - base_debian_dependencies
+  tasks:
+  - name: install build-essential and build tools
+    apt:
+      name: build-essential,libtool,automake,binutils,git
+      state: present
 
 - name: install base python dependencies
   hosts: all
   gather_facts: no
   become: yes # sudo
-  roles:
-    - python
+  tasks:
+  - name: install python dependencies
+    apt:
+      name: python-software-properties,python-dev,python-pycurl,python-pip,python-setuptools,python-virtualenv
+      state: present
 
 - name: install postgresql, postgis and postgresql-common, contrib
   hosts: all
