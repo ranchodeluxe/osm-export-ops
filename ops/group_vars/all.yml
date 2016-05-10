@@ -25,16 +25,6 @@ db_name: hot_exports_dev
 db_user: "{{ app_user.user_name }}_pg"
 db_password: password
 pg_admin_user: 'postgres'
-pg_default_auth_method: 'trust'
-pg_cfg_pg_hba_default:
-  - { type: local, database: all, user: '{{ pg_admin_user }}', address: '', method: '{{ pg_default_auth_method }}', comment: '' }
-  - { type: local, database: all, user: all, address: '',             method: '{{ pg_default_auth_method }}', comment: '"local" is for Unix domain socket connections only' }
-  - { type: host,  database: all, user: all, address: '127.0.0.1/32', method: '{{ pg_default_auth_method }}', comment: 'IPv4 local connections:' }
-  - { type: host,  database: all, user: all, address: '10.0.2.2/32', method: '{{ pg_default_auth_method }}', comment: 'IPv4 local connections:' }
-  - { type: host,  database: all, user: all, address: '::1/128',      method: '{{ pg_default_auth_method }}', comment: 'IPv6 local connections:' }
-pg_cfg_pg_hba_passwd_hosts: []
-pg_cfg_pg_hba_trust_hosts: []
-pg_cfg_pg_hba_custom: []
 
 #
 # thirdparty installs for OSM and Garmin interaction
