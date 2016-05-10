@@ -2,7 +2,7 @@
 #- name: restart overpassapi
 #  service: name=overpassapi state=restarted enabled=yes
 
-- name: restart gunicorn-osm-export-tool2
+- name: restart gunicorn
   service: name=osm-export-tool2 state=restarted enabled=yes
 
 - name: restart nginx

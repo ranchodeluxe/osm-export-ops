@@ -306,13 +306,21 @@
         owner: root
         group: root
         mode: 0644
-      notify: restart gunicorn-osm-export-tool2
+      notify: restart gunicorn
+
+      # the 'notify' callback does not run for some reason, force it for now
+    - name: restart osm-export-tool2
+      service: name=osm-export-tool2 state=restarted enabled=yes
 
     - name: activate osm-export-tool2 'nginx' site
       file: src=/etc/nginx/sites-available/exports
             dest=/etc/nginx/sites-enabled/exports
             state=link
       notify: restart nginx
+
+      # the 'notify' callback does not run for some reason, force it for now
+    - name: restart 'nginx'
+      service: name=nginx state=restarted enabled=yes
 
     - name: create settings file
       template:
@@ -353,12 +361,18 @@
       become_user: "{{ app_user.user_name }}"
 
     - name: run 'python manage.py migrate'
-      shell: python manage.py migrate chdir="{{ project_root }}"
+      django_manage:
+        command: migrate
+        app_path: "{{ project_root }}"
+        settings: "{{ django_settings_mod_path }}"
       become: yes
       become_user: "{{ app_user.user_name }}"
 
-    - name: run 'python manage.py migrate'
-      shell: python manage.py collectionstatic --noinput chdir="{{ project_root }}"
+    - name: run 'python manage.py collectstatic'
+      django_manage:
+        command: collectstatic
+        app_path: "{{ project_root }}"
+        settings: "{{ django_settings_mod_path }}"
       become: yes
       become_user: "{{ app_user.user_name }}"
 
