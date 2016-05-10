@@ -1,0 +1,4 @@
+ansible==2.0.0.2
+#ansible-vault
+boto
+boto3
