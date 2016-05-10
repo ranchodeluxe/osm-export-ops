@@ -8,32 +8,32 @@
 #  become: yes
 #  become_user: "{{ app_user.user_name }}"
 
-- name: "useradd floweruser"
-  user:
-    name: "{{ flower_user }}"
-    generate_ssh_key: no
-    shell: /bin/bash
-    createhome: yes
-    home: "/home/{{ flower_user }}"
-    state: present
-
-- name: install flower celery viewer
-  pip:
-    name: flower
-    state: present
+#- name: "useradd floweruser"
+#  user:
+#    name: "{{ flower_user }}"
+#    generate_ssh_key: no
+#    shell: /bin/bash
+#    createhome: yes
+#    home: "/home/{{ flower_user }}"
+#    state: present
+#
+#- name: install flower celery viewer
+#  pip:
+#    name: flower
+#    state: present
 #    virtualenv_command: /usr/bin/virtualenv
 #    virtualenv: "{{ virtualenv_dir }}"
 #  become: yes
 #  become_user: "{{ app_user.user_name }}"
 
-- name: install the flower systemd script
-  template:
-    src: ../templates/flower.service.j2
-    dest: /etc/init/flower.conf
-    owner: root
-    group: root
-    mode: 0777
-  notify: restart flower
+#- name: install the flower systemd script
+#  template:
+#    src: ../templates/flower.service.j2
+#    dest: /etc/init/flower.conf
+#    owner: root
+#    group: root
+#    mode: 0777
+#  notify: restart flower
 
 #- name: "useradd celeryuser"
 #  user:

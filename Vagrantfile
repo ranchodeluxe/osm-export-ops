@@ -17,11 +17,13 @@ VAGRANTFILE_API_VERSION = "2"
 #
 $ansible_install_script = <<SCRIPT
 if ! which ansible >/dev/null; then
+  sudo apt-get -y install libffi-dev libssl-dev # 05/10/16 failed without these for some reason
   sudo apt-get update
   sudo apt-get upgrade
   sudo apt-get -y install python-dev
   sudo apt-get -y install python-pip
   sudo pip install pip --upgrade
+  sudo pip install --upgrade setuptools # 05/10/16 failed without this addition
   sudo pip install ansible
   sudo pip install ansible-vault
 fi
@@ -55,8 +57,8 @@ Vagrant.configure(2) do |config|
   #
   config.vm.network "forwarded_port", guest: 5432, host: 5432 # postgis
   config.vm.network "forwarded_port", guest: 5555, host: 5555 # flower
-  config.vm.network "forwarded_port", guest: 80, host: 8080 # overpassapi
-  config.vm.network "forwarded_port", guest: 8000, host: 8000 # osmexport
+  config.vm.network "forwarded_port", guest: 80, host: 8080 # nginx default
+  config.vm.network "forwarded_port", guest: 8001, host: 8001 # osmexport
 
   # the root directory ( the directory with Vagrantfile ) shared by default to:
   # /usr/local/src/<root> => /vagrant/<root>

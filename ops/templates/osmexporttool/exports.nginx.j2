@@ -1,0 +1,18 @@
+server {
+  server_name {{ server_name }};
+  listen 0.0.0.0:80;
+
+  location /static/ {
+    alias {{ project_static_dir }};
+  }
+
+  location /downloads/ {
+    alias {{ exports_download_dir }};
+  }
+
+  location / {
+    proxy_pass http://127.0.0.1:8001;
+    proxy_set_header X-Forwarded-Host $server_name;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+}

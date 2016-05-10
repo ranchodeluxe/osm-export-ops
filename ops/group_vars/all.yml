@@ -3,31 +3,35 @@
 # users and groups
 #
 users_and_groups:
-  - user_name: osmexport
+  - user_name: hot
     group_name: dev
 app_user: "{{ users_and_groups[0] }}"
-admin_email: gregcorradini@gmail.com
+admin_email: admin@posm.com
 
 #
 # osm_export_tool
 #
-#project_home: "/home/{{ app_user.user_name }}/dev"
 project_home: "/usr/local/src/dev"
-#virtualenv_dir: "{{ project_home }}/hotosm"
-git_repo_url: https://github.com/ranchodeluxe/osm-export-tool2.git
-repo_name: "osm-export-tool2"
-requirements_file: "{{ project_home }}/{{ repo_name }}/requirements-dev.txt"
+git_repo_url: https://github.com/AmericanRedCross/osm-export-tool2.git
+git_repo_branch: "posm"
+project_root: "{{ project_home }}/{{ git_repo_url | basename | splitext | first }}"
+project_static_dir: "{{ project_root }}/static/"
+requirements_file: "{{ project_root }}/requirements-dev.txt"
+django_settings_mod_path: "core.settings.dev_{{ app_user.user_name }}"
+settings_dest: "{{ project_root }}/core/settings/dev_{{ app_user.user_name }}.py"
+server_name: "osm.export.tool2.dev"
 
 #
 # postgres
 #
-db_name: hot_exports_dev
-db_user: "{{ app_user.user_name }}_pg"
+db_name: exports
+db_user: "{{ app_user.user_name }}"
 db_password: password
 pg_admin_user: 'postgres'
 
 #
 # thirdparty installs for OSM and Garmin interaction
+# TODO: make this less convoluted, though, there might've been a reason to in the first place
 #
 thirdparty_dir: /usr/local/src
 thirdparty_zipfiles:
@@ -46,10 +50,9 @@ splitter_dir: "{{ thirdparty_zipfiles[2].exdir }}/{{ thirdparty_zipfiles[2].url 
 #
 rabbitmq_user: "{{ app_user.user_name }}_rabbitmq"
 rabbitmq_pass: "{{ db_password }}"
-flower_user: "{{ app_user.user_name }}_flower"
 celery_user: "{{ app_user.user_name }}"
 celery_group: "{{ app_user.group_name }}"
-celery_chdir: "{{ project_home }}/{{ repo_name }}"
+celery_chdir: "{{ project_root }}"
 
 #
 # export folders and settings.py
@@ -58,23 +61,21 @@ exports_dir: /usr/local/src/exports
 exports_staging_dir: "{{ exports_dir }}/staging/"
 exports_media_dir: "{{ exports_dir }}/media/"
 exports_download_dir: "{{ exports_dir }}/download/"
-django_settings_mod_path: "core.settings.dev_{{ app_user.user_name }}"
-settings_dest: "{{ project_home }}/{{ repo_name }}/core/settings/dev_{{ app_user.user_name }}.py"
-garmin_xml_dest: "{{ project_home }}/{{ repo_name }}/utils/conf/garmin_config.xml"
+garmin_xml_dest: "{{ project_root }}/utils/conf/garmin_config.xml"
 
 #
 # overpass api
 #
-overpass_api_dir: "{{ thirdparty_dir }}/overpassapi"
-overpass_api_url: http://0.0.0.0:80/cgi-bin/interpreter
-overpass_latest_tar: http://dev.overpass-api.de/releases/osm-3s_v0.7.52.tar.gz
+overpass_api_url: http://overpass-api.de/api/interpreter
+#overpass_api_dir: "{{ thirdparty_dir }}/overpassapi"
+#overpass_latest_tar: http://dev.overpass-api.de/releases/osm-3s_v0.7.52.tar.gz
 # $EXEC_DIR: the root directory in which executable files should be installed (/bin/ suffix removed)
-overpass_exec_dir: "{{ overpass_api_dir }}/exec" # move
+#overpass_exec_dir: "{{ overpass_api_dir }}/exec" # move
 # $DB_DIR: a directory to store the database
-overpass_db_dir: "{{ overpass_api_dir }}/db" # move
+#overpass_db_dir: "{{ overpass_api_dir }}/db" # move
 # $PLANET_FILE: a place for the compressed (bzip) OSM planet/extract file (up to 10 GB)
-overpass_planet_dir: "{{ overpass_api_dir }}/planetfile" # move
+#overpass_planet_dir: "{{ overpass_api_dir }}/planetfile" # move
 # $REPLICATE_DIR: a directory to store minutely (or otherwise) diffs (only necessary if you decide to configure minutely updates below)
-overpass_replicate_dir: "{{ overpass_api_dir }}/replicate" # move
-planet_osm_download_url: http://download.geofabrik.de/south-america/suriname-latest.osm.pbf
-planet_filename: "{{ planet_osm_download_url | basename }}" # move
+#overpass_replicate_dir: "{{ overpass_api_dir }}/replicate" # move
+#planet_osm_download_url: http://download.geofabrik.de/south-america/suriname-latest.osm.pbf
+#planet_filename: "{{ planet_osm_download_url | basename }}" # move

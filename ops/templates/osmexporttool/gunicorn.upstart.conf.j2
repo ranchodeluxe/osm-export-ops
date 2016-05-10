@@ -1,0 +1,24 @@
+description     "osm-export-tool2 (gunicorn)"
+
+start on (local-filesystems and net-device-up and runlevel [2345])
+stop on shutdown
+
+
+respawn
+#respawn limit 5 60
+
+pre-start script
+    echo "[`date '+%c'`] Starting: osm-export-tool2" >> /var/log/osm-export-tool2.log
+end script
+
+pre-stop script
+    echo "[`date '+%c'`] Stopping: osm-export-tool2" >> /var/log/osm-export-tool2.log
+end script
+
+exec start-stop-daemon \
+        --start \
+        --chdir {{ project_root }} \
+        --chuid {{ app_user.user_name }} \
+        --make-pidfile \
+        --pidfile /var/run/osm-export-tool2.pid \
+        --exec /usr/local/bin/gunicorn -- core.wsgi:application -e DJANGO_SETTINGS_MODULE={{ django_settings_mod_path }} -e STATIC_ROOT={{ project_static_dir }} --workers=3 --bind :8001 >> /var/log/osm-export-tool2.log 2>&1

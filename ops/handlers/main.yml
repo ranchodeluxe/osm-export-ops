@@ -1,6 +1,12 @@
 ---
-- name: restart overpassapi
-  service: name=overpassapi state=restarted enabled=yes
+#- name: restart overpassapi
+#  service: name=overpassapi state=restarted enabled=yes
 
-- name: restart apache2
-  service: name=apache2 state=restarted enabled=yes
+- name: restart gunicorn-osm-export-tool2
+  service: name=osm-export-tool2 state=restarted enabled=yes
+
+- name: restart nginx
+  service: name=nginx state=restarted enabled=yes
+
+#- name: restart apache2
+#  service: name=apache2 state=restarted enabled=yes

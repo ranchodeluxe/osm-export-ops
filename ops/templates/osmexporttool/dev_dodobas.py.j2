@@ -3,6 +3,12 @@ from __future__ import absolute_import
 
 from .dev import *  # NOQA
 
+ALLOWED_HOSTS = [''{{ server_name }}'']
+SESSION_COOKIE_DOMAIN = '{{ server_name }}'
+HOSTNAME = '{{ server_name }}'
+TASK_ERROR_EMAIL = 'gregcorradini@gmail.com'
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
