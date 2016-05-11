@@ -19,7 +19,7 @@ project_static_dir: "{{ project_root }}/static/"
 requirements_file: "{{ project_root }}/requirements-dev.txt"
 django_settings_mod_path: "core.settings.prod_{{ app_user.user_name }}"
 settings_dest: "{{ project_root }}/core/settings/prod_{{ app_user.user_name }}.py"
-server_name: "osm.export.tool2.dev"
+server_name: "vivid64-osmexport-03152016"
 
 #
 # postgres
