@@ -114,7 +114,7 @@
     npm: name=interp global=yes
 
   - name: install 't1'
-    npm: name=t1 global=yes
+    npm: name=t1 global=yes state=latest
     ignore_errors: yes
 
   - name: install 'tilelive-http'
@@ -392,7 +392,7 @@
 
     - name: create settings file
       template:
-        src: "templates/osmexporttool/dev_dodobas.py.j2"
+        src: "templates/osmexporttool/site.settings.py.j2"
         dest: "{{ settings_dest }}"
         owner: "{{ app_user.user_name }}"
         group: "{{ app_user.group_name }}"

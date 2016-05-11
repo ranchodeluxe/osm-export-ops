@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
-from .dev import *  # NOQA
+from .prod import *  # NOQA
 
 ALLOWED_HOSTS = ['{{ server_name }}']
 SESSION_COOKIE_DOMAIN = '{{ server_name }}'

@@ -17,8 +17,8 @@ git_repo_branch: "posm"
 project_root: "{{ project_home }}/{{ git_repo_url | basename | splitext | first }}"
 project_static_dir: "{{ project_root }}/static/"
 requirements_file: "{{ project_root }}/requirements-dev.txt"
-django_settings_mod_path: "core.settings.dev_{{ app_user.user_name }}"
-settings_dest: "{{ project_root }}/core/settings/dev_{{ app_user.user_name }}.py"
+django_settings_mod_path: "core.settings.prod_{{ app_user.user_name }}"
+settings_dest: "{{ project_root }}/core/settings/prod_{{ app_user.user_name }}.py"
 server_name: "osm.export.tool2.dev"
 
 #
@@ -31,7 +31,7 @@ pg_admin_user: 'postgres'
 
 #
 # thirdparty installs for OSM and Garmin interaction
-# TODO: make this less convoluted, though, there might've been a reason to in the first place
+# TODO: make this less convoluted
 #
 thirdparty_dir: /usr/local/src
 thirdparty_zipfiles:
@@ -42,8 +42,8 @@ thirdparty_zipfiles:
   - url: http://www.mkgmap.org.uk/download/splitter-r435.zip
     exdir: "{{ thirdparty_dir }}/splitter"
 osmandmapcreator_dir: "{{ thirdparty_zipfiles[1].exdir }}"
-mkgmap_dir: "{{ thirdparty_zipfiles[1].exdir }}/{{ thirdparty_zipfiles[1].url | basename | regex_replace('.zip', '') }}"
-splitter_dir: "{{ thirdparty_zipfiles[2].exdir }}/{{ thirdparty_zipfiles[2].url | basename | regex_replace('.zip', '') }}"
+mkgmap_dir: "{{ thirdparty_zipfiles[1].exdir }}/{{ thirdparty_zipfiles[1].url | basename | splitext | first }}"
+splitter_dir: "{{ thirdparty_zipfiles[2].exdir }}/{{ thirdparty_zipfiles[2].url | basename | splitext | first }}"
 
 #
 # rabbitmq, celery and flower
@@ -71,4 +71,4 @@ overpass_api_url: http://overpass-api.de/api/interpreter
 #
 # nodejs
 #
-node_version: 4
+node_version: 5
