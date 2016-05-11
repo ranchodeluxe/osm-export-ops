@@ -1,0 +1,25 @@
+description     "celery"
+
+start on (local-filesystems and net-device-up and runlevel [2345])
+stop on shutdown
+
+env {{ django_settings_mod_path }}
+
+respawn
+#respawn limit 5 60
+
+pre-start script
+    echo "[`date '+%c'`] Starting: celery" >> /var/log/celery.log
+end script
+
+pre-stop script
+    echo "[`date '+%c'`] Stopping: celery" >> /var/log/celery.log
+end script
+
+exec start-stop-daemon \
+        --start \
+        --chdir {{ project_root }} \
+        --chuid {{ app_user.user_name }} \
+        --make-pidfile \
+        --pidfile /var/run/celery.pid \
+                --exec /usr/local/bin/celery -- -A core worker >> /var/log/celery.log 2>&1

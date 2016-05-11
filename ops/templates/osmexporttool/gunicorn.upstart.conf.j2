@@ -3,6 +3,8 @@ description     "osm-export-tool2 (gunicorn)"
 start on (local-filesystems and net-device-up and runlevel [2345])
 stop on shutdown
 
+env DJANGO_SETTINGS_MODULE={{ django_settings_mod_path }}
+evn STATIC_ROOT={{ project_static_dir }}
 
 respawn
 #respawn limit 5 60
@@ -21,4 +23,4 @@ exec start-stop-daemon \
         --chuid {{ app_user.user_name }} \
         --make-pidfile \
         --pidfile /var/run/osm-export-tool2.pid \
-        --exec /usr/local/bin/gunicorn -- core.wsgi:application -e DJANGO_SETTINGS_MODULE={{ django_settings_mod_path }} -e STATIC_ROOT={{ project_static_dir }} --workers=3 --bind :8001 >> /var/log/osm-export-tool2.log 2>&1
+        --exec /usr/local/bin/gunicorn -- core.wsgi:application --workers=3 --bind :8001 >> /var/log/osm-export-tool2.log 2>&1
