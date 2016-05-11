@@ -3,7 +3,7 @@ description     "celery-beat"
 start on (local-filesystems and net-device-up and runlevel [2345])
 stop on shutdown
 
-env {{ django_settings_mod_path }}
+env DJANGO_SETTINGS_MODULE={{ django_settings_mod_path }}
 
 respawn
 #respawn limit 5 60
