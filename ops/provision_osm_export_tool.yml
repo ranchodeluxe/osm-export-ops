@@ -89,8 +89,11 @@
   hosts: all
   gather_facts: no
   become: yes # sudo
-  roles:
-    - celeryd
+  tasks:
+  - name: install celery
+    pip:
+      name: celery
+      state: present
 
 
 - name: osm_export_tool project setup
