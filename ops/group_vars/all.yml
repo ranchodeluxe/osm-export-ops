@@ -67,15 +67,8 @@ garmin_xml_dest: "{{ project_root }}/utils/conf/garmin_config.xml"
 # overpass api
 #
 overpass_api_url: http://overpass-api.de/api/interpreter
-#overpass_api_dir: "{{ thirdparty_dir }}/overpassapi"
-#overpass_latest_tar: http://dev.overpass-api.de/releases/osm-3s_v0.7.52.tar.gz
-# $EXEC_DIR: the root directory in which executable files should be installed (/bin/ suffix removed)
-#overpass_exec_dir: "{{ overpass_api_dir }}/exec" # move
-# $DB_DIR: a directory to store the database
-#overpass_db_dir: "{{ overpass_api_dir }}/db" # move
-# $PLANET_FILE: a place for the compressed (bzip) OSM planet/extract file (up to 10 GB)
-#overpass_planet_dir: "{{ overpass_api_dir }}/planetfile" # move
-# $REPLICATE_DIR: a directory to store minutely (or otherwise) diffs (only necessary if you decide to configure minutely updates below)
-#overpass_replicate_dir: "{{ overpass_api_dir }}/replicate" # move
-#planet_osm_download_url: http://download.geofabrik.de/south-america/suriname-latest.osm.pbf
-#planet_filename: "{{ planet_osm_download_url | basename }}" # move
+
+#
+# nodejs
+#
+node_version: 4

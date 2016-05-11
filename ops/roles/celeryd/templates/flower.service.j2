@@ -1,5 +1,0 @@
-description "Celery Flower"
-author "Greg Corradini"
-start on runlevel [2345]
-stop on shutdown
-exec /usr/local/bin/celery flower --broker=amqp://{{ rabbitmq_user }}:{{ rabbitmq_pass }}@localhost:5672/

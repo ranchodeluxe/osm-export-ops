@@ -4,7 +4,7 @@ start on (local-filesystems and net-device-up and runlevel [2345])
 stop on shutdown
 
 env DJANGO_SETTINGS_MODULE={{ django_settings_mod_path }}
-evn STATIC_ROOT={{ project_static_dir }}
+env STATIC_ROOT={{ project_static_dir }}
 
 respawn
 #respawn limit 5 60

@@ -1,9 +1,9 @@
+## Getting Started with Virtualbox
+
 A repository that helps build a development environment
 for [osm-export-tool2](https://github.com/hotosm/osm-export-tool2) using Ansible, Vagrant, Virtualbox and Ubuntu 14.04 . Later it will be generalized
 to help with EC2 deployment. Currently the provisioning workflow closely follows the operations described in the
 [osm-export-tool2 README](https://github.com/hotosm/osm-export-tool2/blob/master/README.md), which it will diverge from in the future
-
-## Getting Started
 
 0. Install [Vagrant](https://www.vagrantup.com/) and [Virtualbox](https://www.virtualbox.org/wiki/Downloads) for your system. The provisioning was tested
 on the following versions. So it's probably best to use these versions or greater:
@@ -29,23 +29,26 @@ If you see an error such as `Failed to mount folders in Linux guest` then check 
     $ cd osm-export-ops/
     $ vagrant up
     ```
+
 0. When provisioning finishes the `osm-export-tool2` repository should be inside `dev/` so you can edit the files locally
 
-0. Run the Django development server as described in `osm-export-tool2` docs. In the future this will be setup with Apache:
+0. The `nginx` server on port 80 hands back statics and proxies requests to `gunicorn` on port 81. You can interact with the osm-export-tool2 `gunicorn` service like:
 
     ```bash
-    $ cd osm-export-ops/ # on host system
-    $ vagrant ssh
-    $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
-    $ python manage.py runserver 0.0.0.0:8000
+    $ sudo service osm-export-tool2 status # is it up or down?
+    $ sudo service osm-export-tool2 start
+    $ sudo service osm-export-tool2 stop
     ```
 
-0. Run the celery workers as described in `osm-export-tool2` docs. In the future this will be daemonized:
+0. The `celery` and `celerybeat` daemons can also be inspected this way:
 
     ```bash
-    $ cd osm-export-ops/ # on host system
-    $ vagrant ssh
-    $ sudo screen
-    $ sudo su - osmexport # or the name of your {{ app_user.user_name }} in config vars
-    $ celery -A core worker --loglevel debug --logfile=celery.log
+    $ sudo service celery status # is it up or down?
+    $ sudo service celerybeat status # is it up or down?
     ```
+
+0. If you are are developing using the Django runserver remember to stop the `gunicorn` service with `sudo service osm-export-tool2 stop`
+
+## Getting Started with AWS
+
+0. To be continued...
