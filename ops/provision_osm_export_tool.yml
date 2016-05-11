@@ -114,7 +114,7 @@
     npm: name=interp global=yes
 
   - name: install 'tl'
-    npm: name=t1 global=yes
+    npm: name=tl global=yes
     ignore_errors: yes
 
   - name: install 'tilelive-http'
