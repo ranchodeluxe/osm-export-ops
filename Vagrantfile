@@ -59,6 +59,7 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 5555, host: 5555 # flower
   config.vm.network "forwarded_port", guest: 80, host: 8080 # nginx default
   config.vm.network "forwarded_port", guest: 8001, host: 8001 # osmexport
+  config.vm.network "forwarded_port", guest: 25, host: 25 # postfix
 
   # the root directory ( the directory with Vagrantfile ) shared by default to:
   # /usr/local/src/<root> => /vagrant/<root>
