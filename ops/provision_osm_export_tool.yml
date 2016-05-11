@@ -113,8 +113,8 @@
   - name: install 'interp'
     npm: name=interp global=yes
 
-  - name: install 't1'
-    npm: name=t1 global=yes state=latest
+  - name: install 'tl'
+    npm: name=t1 global=yes
     ignore_errors: yes
 
   - name: install 'tilelive-http'
