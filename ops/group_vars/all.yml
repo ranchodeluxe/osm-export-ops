@@ -59,7 +59,7 @@ celery_chdir: "{{ project_root }}"
 #
 exports_dir: /usr/local/src/exports
 exports_staging_dir: "{{ exports_dir }}/staging/"
-exports_media_dir: "{{ exports_dir }}/media/"
+exports_media_dir: "/downloads/" # so nginx can handback downloads
 exports_download_dir: "{{ exports_dir }}/download/"
 garmin_xml_dest: "{{ project_root }}/utils/conf/garmin_config.xml"
 

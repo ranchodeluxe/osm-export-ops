@@ -303,7 +303,6 @@
       mode: 0777
     with_items:
       - "{{ exports_staging_dir }}"
-      - "{{ exports_media_dir }}"
       - "{{ exports_download_dir }}"
     become: yes
     become_user: "{{ app_user.user_name }}"
@@ -311,7 +310,7 @@
 
 - name: osm_export_tool checkout and pip install
   hosts: all
-  gather_facts: no
+  gather_facts: yes
   become: yes # sudo
   tasks:
     - name: apt get dependecies that aren't listed in osm-export-tool2 docs
@@ -444,6 +443,24 @@
       become: yes
       become_user: "{{ app_user.user_name }}"
 
+    - name: set postfix option hostname
+      debconf: name=postifx question="postfix/mailname" value="{{ ansible_hostname }}" vtype="string"
+
+    - name: set postfix option type as internet site
+      debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
+
     - name: install postfix
-      apt:
-        name: postfix
+      apt: name=postfix state=present
+
+    - name: install the postfix `main.cf` /etc/postfix
+      template:
+        src: templates/osmexporttool/postfix.main.cf.j2
+        dest: /etc/postfix/main.cf
+        owner: root
+        group: root
+        mode: 0644
+      notify: restart postfix
+
+      # the 'notify' callback does not run for some reason, force it for now
+    - name: restart postfix
+      service: name=postfix state=restarted enabled=yes

@@ -11,6 +11,8 @@
 - name: restart nginx
   service: name=nginx state=restarted enabled=yes
 
+- name: restart postfix
+  service: name=postfix state=restarted enabled=yes
 #- name: restart apache2
 #  service: name=apache2 state=restarted enabled=yes
 
