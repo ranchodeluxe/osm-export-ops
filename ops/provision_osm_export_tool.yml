@@ -443,24 +443,29 @@
       become: yes
       become_user: "{{ app_user.user_name }}"
 
-    - name: set postfix option hostname
-      debconf: name=postifx question="postfix/mailname" value="{{ ansible_hostname }}" vtype="string"
-
-    - name: set postfix option type as internet site
-      debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
+#    - name: set postfix option hostname
+#      debconf: name=postifx question="postfix/mailname" value="{{ansible_fqdn}}" vtype="string"
+#
+#    - name: set postfix option type as internet site
+#      debconf: name=postfix question="postfix/main_mailer_type" value="'Internet Site'" vtype="string"
 
     - name: install postfix
-      apt: name=postfix state=present
+      apt: package={{ item }} state=installed force=yes update_cache=yes cache_valid_time=3600
+      with_items:
+        - postfix
 
-    - name: install the postfix `main.cf` /etc/postfix
-      template:
-        src: templates/osmexporttool/postfix.main.cf.j2
-        dest: /etc/postfix/main.cf
-        owner: root
-        group: root
-        mode: 0644
-      notify: restart postfix
-
-      # the 'notify' callback does not run for some reason, force it for now
-    - name: restart postfix
-      service: name=postfix state=restarted enabled=yes
+#    - name: install the postfix `main.cf` /etc/postfix
+#      template:
+#        src: templates/osmexporttool/postfix.main.cf.j2
+#        dest: /etc/postfix/main.cf
+#        owner: root
+#        group: root
+#        mode: 0644
+#      notify: reload postfix
+#
+#      # the 'notify' callback does not run for some reason, force it for now
+#    - name: restart postfix
+#      service: name=postfix state=restarted enabled=yes
+#
+#    - name: reload postfix
+#      service: name=postfix state=reloaded enabled=yes

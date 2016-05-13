@@ -25,7 +25,6 @@ if ! which ansible >/dev/null; then
   sudo pip install pip --upgrade
   sudo pip install --upgrade setuptools # 05/10/16 failed without this addition
   sudo pip install ansible
-  sudo pip install ansible-vault
 fi
 SCRIPT
 
@@ -57,7 +56,7 @@ Vagrant.configure(2) do |config|
   #
   config.vm.network "forwarded_port", guest: 5432, host: 5432 # postgis
   config.vm.network "forwarded_port", guest: 5555, host: 5555 # flower
-  config.vm.network "forwarded_port", guest: 80, host: 8080 # nginx default
+  config.vm.network "forwarded_port", guest: 80, host: 80 # nginx default
   config.vm.network "forwarded_port", guest: 8001, host: 8001 # osmexport
   config.vm.network "forwarded_port", guest: 25, host: 25 # postfix
 
