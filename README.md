@@ -14,13 +14,19 @@ on the following versions. So it's probably best to use these versions or greate
     - VBoxGuestAdditions 4.3.10
     - Ubuntu 14.04 LTS ( trusty ) # just so we're clear what my host OS was
     ```
-0. After Vagrant is installed on your host make sure to install a couple plugins:
+0. After Vagrant is installed on your host make sure to install a few plugins:
 
     ```bash
     $ vagrant plugin install vagrant-vbguest
     $ vagrant plugin install vagrant-ansible-local
     $ vagrant plugin install vagrant-hostmanager
     ```
+0. Export an environment variable called `DB_PASSWORD`. If this is not set then the `vagrant up` command will raise an exception later on
+
+    ```bash
+    $ export DB_PASSWORD=password
+    ```
+
 0. Review the default config variables in `/ops/group_vars/all.yml` that setup this environment. You might want to change some
 
 0. Provision it by running the following commands. Vagrant and VboxGuestAdditions haven't been playing nicely on multiple platforms.
@@ -28,8 +34,9 @@ If you see an error such as `Failed to mount folders in Linux guest` then check 
 
     ```bash
     $ cd osm-export-ops/
-    # NOTE: i'm creating the VM with administrative rights (sudo) so Vagrant can proxy host port 80 nicely, you should do the same
-    $ sudo vagrant up
+    # NOTE: i'm creating the VM with administrative rights (sudo)
+    # so that Vagrant can proxy host port 80 nicely, you should do the same
+    $ sudo -E vagrant up
     ```
 
 0. The `osm-export-tool2` repository should be inside the `/dev` directory so you can edit the files locally.

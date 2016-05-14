@@ -217,6 +217,7 @@
       db: "{{ db_name }}"
       name: "{{ db_user }}"
       password: "{{ db_password }}"
+  - debug: msg="DB_PASSWORD = {{ db_password }}"
 
   - name: psql check schema 'exports'
     command: psql -t -d "{{ db_name }}" -c "SELECT EXISTS(SELECT 1 FROM pg_namespace WHERE nspname = 'exports');"

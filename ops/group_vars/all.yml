@@ -26,7 +26,7 @@ server_name: "localhost"
 #
 db_name: exports
 db_user: "{{ app_user.user_name }}"
-db_password: password
+db_password: "{{ DB_PASSWORD }}" # you must set an environment variable called DB_PASSWORD to populate this
 pg_admin_user: 'postgres'
 
 #
