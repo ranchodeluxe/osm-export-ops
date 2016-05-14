@@ -32,15 +32,6 @@ If you see an error such as `Failed to mount folders in Linux guest` then check 
     $ sudo vagrant up
     ```
 
-0. Getting `postfix` to install nicely needs more work. So it's best to configure manually. After provisioning has run:
-
-    ```bash
-    $ sudo vagrant ssh
-    $ sudo dpkg-reconfigure postfix
-    # select the first option for 'Internet Site' and select 'OK' for the other default settings
-    $ exit
-    ```
-
 0. The `osm-export-tool2` repository should be inside the `/dev` directory so you can edit the files locally.
 The site *should* be running locally at `http://localhost:80`.
 
