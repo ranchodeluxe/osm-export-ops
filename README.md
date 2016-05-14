@@ -19,6 +19,7 @@ on the following versions. So it's probably best to use these versions or greate
     ```bash
     $ vagrant plugin install vagrant-vbguest
     $ vagrant plugin install vagrant-ansible-local
+    $ vagrant plugin install vagrant-hostmanager
     ```
 0. Review the default config variables in `/ops/group_vars/all.yml` that setup this environment. You might want to change some
 
