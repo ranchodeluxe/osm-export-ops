@@ -27,7 +27,7 @@
 
 - name: install postgis packages
   apt:
-    name: postgis,postgresql-9.3-postgis-2.1
+    name: postgis
     state: present
 
 - name: install psycopg2 bindings
