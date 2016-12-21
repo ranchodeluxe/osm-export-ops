@@ -9,9 +9,9 @@ to help with EC2 deployment. Currently the provisioning workflow closely follows
 on the following versions. So it's probably best to use these versions or greater:
 
     ```bash
-    - Vagrant 1.8.1
-    - VirtualBox 4.3.10
-    - VBoxGuestAdditions 4.3.10
+    - Vagrant 1.9.1
+    - VirtualBox 4.3.36
+    - VBoxGuestAdditions 4.3.36
     - Ubuntu 14.04 LTS ( trusty ) # just so we're clear what my host OS was
     ```
 0. After Vagrant is installed on your host make sure to install a few plugins:
