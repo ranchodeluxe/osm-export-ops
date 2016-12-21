@@ -7,8 +7,7 @@
 # execute on your host once:
 #
 # vagrant plugin install vagrant-vbguest
-# vagrant plugin install vagrant-ansible-local
-#
+# vagrant plugin install vagrant-ansible-local #
 CWD = Dir.pwd
 VAGRANTFILE_API_VERSION = "2"
 
@@ -39,13 +38,13 @@ if !Vagrant.has_plugin?('vagrant-ansible-local')
 end
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "trusty64-osmexport-03202016"
+  config.vm.box = "trusty64-osmexport-12212016"
   config.vm.box_url = "https://oss-binaries.phusionpassenger.com/vagrant/boxes/latest/ubuntu-14.04-amd64-vbox.box"
   config.hostmanager.enabled = true
   config.hostmanager.manage_host = true
   config.hostmanager.ignore_private_ip = false
   config.hostmanager.include_offline = true
-  config.vm.hostname = 'trusty64-osmexport-03202016'
+  config.vm.hostname = 'trusty64-osmexport-12212016'
 
   config.vm.provider "virtualbox" do |vb|
     vb.memory = "2024"
@@ -56,7 +55,7 @@ Vagrant.configure(2) do |config|
   #
   config.vm.network "forwarded_port", guest: 5432, host: 5432 # postgis
   config.vm.network "forwarded_port", guest: 5555, host: 5555 # flower
-  config.vm.network "forwarded_port", guest: 80, host: 80 # nginx default
+  config.vm.network "forwarded_port", guest: 8080, host: 8080 # nginx default
   config.vm.network "forwarded_port", guest: 8001, host: 8001 # osmexport
   config.vm.network "forwarded_port", guest: 25, host: 25 # postfix
 
