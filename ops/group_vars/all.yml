@@ -12,8 +12,8 @@ admin_email: admin@posm.com
 # osm_export_tool
 #
 project_home: "/usr/local/src/dev"
-git_repo_url: https://github.com/AmericanRedCross/osm-export-tool2.git
-git_repo_branch: "posm"
+git_repo_url: https://github.com/ranchodeluxe/osm-export-tool2
+git_repo_branch: "master"
 project_root: "{{ project_home }}/{{ git_repo_url | basename | splitext | first }}"
 project_static_dir: "{{ project_root }}/static/"
 requirements_file: "{{ project_root }}/requirements-dev.txt"
