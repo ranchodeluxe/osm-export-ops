@@ -1,5 +1,14 @@
 ---
 #
+# CONFIG_ENVIRONMENT
+# an environment variable that toggles
+# the correct `core.setttings.[ dev  | prod ]_<user>.py` file
+# see the vars `django_settings_mod_path` and `settings_dest` below to see it's full construction
+# must be one of [ 'dev', 'prod' ]
+# if not set, then defaults to `dev`
+config_environment: "{{ CONFIG_ENVIRONMENT | default ('dev') }}"
+
+#
 # users and groups
 #
 users_and_groups:
@@ -17,8 +26,8 @@ git_repo_branch: "master"
 project_root: "{{ project_home }}/{{ git_repo_url | basename | splitext | first }}"
 project_static_dir: "{{ project_root }}/static/"
 requirements_file: "{{ project_root }}/requirements-dev.txt"
-django_settings_mod_path: "core.settings.prod_{{ app_user.user_name }}"
-settings_dest: "{{ project_root }}/core/settings/prod_{{ app_user.user_name }}.py"
+django_settings_mod_path: "core.settings.{{ config_environment }}_{{ app_user.user_name }}"
+settings_dest: "{{ project_root }}/core/settings/{{ config_environment }}_{{ app_user.user_name }}.py"
 server_name: "localhost"
 
 #
