@@ -76,8 +76,7 @@ Vagrant.configure(2) do |config|
   #
   config.vm.provision "shell", inline: $ansible_install_script # make sure ansible is installed on guest
   config.vm.provision "ansibleLocal" do |ansible|
-    db_password = ENV['DB_PASSWORD']
-    ansible.extra_vars = { "DB_PASSWORD" => db_password }
+    ansible.extra_vars = { :DB_PASSWORD => ENV['DB_PASSWORD'], :CONFIG_ENVIRONMENT => ENV['CONFIG_ENVIRONMENT'] }
     ansible.guest_folder = CWD + "/ops"
     ansible.raw_arguments = "--inventory="+CWD+"/ops/inventories/vagrant.ini"
     ansible.limit = "all"
