@@ -1,7 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import
 
+{% if config_environment == 'prod' %}
 from .prod import *  # NOQA
+{% else %}
+from .dev import *  # NOQA
+{% endif %}
 
 ALLOWED_HOSTS = ['{{ server_name }}']
 SESSION_COOKIE_DOMAIN = '{{ server_name }}'
