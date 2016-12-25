@@ -1,0 +1,30 @@
+# DO NOT name this file .ini, or it will get ignored.
+#----------------------------------------------------------
+# the playbooks should create new instances from deploy_tags passed in with `ansible-playbook` command
+# This file just specifies the nested groupings used to grab appropriate group_vars
+
+[sandbox]
+[sandbox:children]
+aws
+
+[aws]
+[aws:children]
+us-west-2
+
+[us-west-2]
+[us-west-2:children]
+us-west-2a
+
+[us-west-2a]
+[us-west-2a:children]
+tag_appserver_sandbox-us-west-2a
+
+[tag_appserver_sandbox-us-west-2a]
+[tag_appserver_sandbox-us-west-2a:children]
+osmexporttool2_12242016
+
+[osmexporttool2_12242016] # deploy_tag
+local ansible_python_interpreter=python
+
+# children are hard to read, the goal is layer group lookups
+# sandbox -> aws-> us-west-2 -> us-west-2a -> tag_appserver_sandbox-us-west-2a -> osmexporttool2_12242016

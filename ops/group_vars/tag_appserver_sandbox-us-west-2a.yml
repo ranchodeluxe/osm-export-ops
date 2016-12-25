@@ -1,0 +1,3 @@
+ec2_name: osm-export-tool2
+ami_id: "ami-f319c293"
+keypair_name: ubuntu

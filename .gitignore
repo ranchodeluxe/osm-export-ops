@@ -3,3 +3,4 @@
 *.retry
 dev/osm-export-tool2
 aws_creds.sh
+*_ssh_key*

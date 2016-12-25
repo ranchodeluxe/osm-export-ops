@@ -1,0 +1,3 @@
+instance_type: "t2.large"
+region: "us-west-2"
+aws_config_environment: "sandbox"

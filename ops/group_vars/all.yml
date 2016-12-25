@@ -24,7 +24,7 @@ project_home: "/usr/local/src/dev"
 git_repo_url: https://github.com/ranchodeluxe/osm-export-tool2
 git_repo_branch: "master"
 project_root: "{{ project_home }}/{{ git_repo_url | basename | splitext | first }}"
-project_static_dir: "{{ project_root }}/static/"
+project_static_dir: "/srv/static/"
 requirements_file: "{{ project_root }}/requirements-dev.txt"
 django_settings_mod_path: "core.settings.{{ config_environment }}_{{ app_user.user_name }}"
 settings_dest: "{{ project_root }}/core/settings/{{ config_environment }}_{{ app_user.user_name }}.py"
@@ -57,7 +57,7 @@ splitter_dir: "{{ thirdparty_zipfiles[2].exdir }}/{{ thirdparty_zipfiles[2].url 
 #
 # rabbitmq, celery and flower
 #
-rabbitmq_user: "{{ app_user.user_name }}_rabbitmq"
+rabbitmq_user: "{{ app_user.user_name }}"
 rabbitmq_pass: "{{ db_password }}"
 celery_user: "{{ app_user.user_name }}"
 celery_group: "{{ app_user.group_name }}"
